@@ -23,6 +23,7 @@ func main() {
 	// 1. khai bao basic
 	fmt.Println("khai báo slide = [] không có số lượng")
 	slide1 := []int{1, 2, 3}
+	// var slide1 = new([50]int)[0:10]
 	fmt.Println(slide1)
 
 	// 2. tạo slide: cắt tu 1 array

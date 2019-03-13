@@ -9,7 +9,7 @@ import (
 	"fmt"
 )
 
-// 1. tao struct
+// 1a. tao struct
 type Person struct {
 	id   int
 	name string
@@ -33,23 +33,34 @@ type Teacher struct {
 	class int
 }
 
-// 1. function struct
+// 1b. method struct
 func (p Person) getId() (int, error) {
 	return p.id, nil
 }
 
+// 1c. override
+func (p Student) getId() (int, error) {
+	p.Person.getId()
+
+	fmt.Println("finish")
+	return 0, nil
+}
+
 // 1. tao struct
-//    function struct
+//    method struct
+//	  override
 // 2. co ke thua
 // 3. dinh nghia anonymous
-// 4. struct long struct - nested struct
+// 4. struct long struct - nested struct: giong nhu has-a trong java
 // 5. dinh nghia anonymous co ke thua
 // 6. khai bao anonymous field
 // 7. compare 2 struct
 func main() {
-	// 1. tao struct
-	//    function struct
+	// 1a. tao struct
 	per1 := Person{id: 1, name: "thien0", age: 24}
+	// per1 := new(Person)
+
+	// 1b. method struct
 	fmt.Println(per1.getId())
 
 	// 2.

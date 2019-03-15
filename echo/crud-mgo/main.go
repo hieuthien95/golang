@@ -3,12 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -16,101 +13,97 @@ import (
 
 type (
 	User struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
+		Name    string  `json:"name"`
+		Age     int     `json:"age"`
+		Address string  `json:"address"`
+		Exp     float32 `json:"exp"`
 	}
 )
 
-var ()
-
-func getListUser(ctx echo.Context) error {
-	var usrs []User
-
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		log.Println("Could not connect to mongo: ", err.Error())
-		return nil
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-
-	c := session.DB("mydemo").C("user")
-	c.Find(bson.M{}).All(&usrs)
-
-	return ctx.JSON(http.StatusOK, usrs)
-}
+var (
+	session *mgo.Session
+)
 
 func getUser(ctx echo.Context) error {
-	id, _ := strconv.Atoi(ctx.Param("id"))
+	ss := session.Clone()
+	defer ss.Close()
 
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		log.Println("Could not connect to mongo: ", err.Error())
-		return nil
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-
-	c := session.DB("mydemo").C("user")
+	id := ctx.Param("id")
 	usr := User{}
-	c.Find(bson.M{"id": id}).One(&usr)
+
+	c := ss.DB("mydemo").C("user")
+	c.Find(bson.M{"name": id}).One(&usr)
 
 	return ctx.JSON(http.StatusOK, usr)
 }
 
 func createUser(ctx echo.Context) error {
+	ss := session.Clone()
+	defer ss.Close()
+
 	var usr = &User{}
 	ctx.Bind(usr)
 
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		log.Println("Could not connect to mongo: ", err.Error())
-		return nil
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
+	c := ss.DB("mydemo").C("user")
+	c.Insert(usr)
 
-	c := session.DB("mydemo").C("user")
-
-	c.UpsertId(usr.Name, usr)
-
-	return ctx.JSON(http.StatusCreated, usr)
+	return ctx.JSON(http.StatusCreated, nil)
 }
 
 func updateUser(ctx echo.Context) error {
-	// var usr = new(User)
+	ss := session.Clone()
+	defer ss.Close()
 
-	// id, _ := strconv.Atoi(ctx.Param("id"))
-	// if err := db.Where("id = ?", id).First(&usr).Error; err != nil {
-	// 	ctx.String(http.StatusNotFound, "StatusNotFound!")
-	// 	fmt.Println(err)
-	// }
-	// ctx.Bind(&usr)
+	id := ctx.Param("id")
 
-	// db.Save(&usr)
+	usr := &User{}
+	ctx.Bind(usr)
+
+	c := ss.DB("mydemo").C("user")
+	c.Upsert(bson.M{"name": id}, usr)
 
 	return ctx.JSON(http.StatusOK, nil)
 }
 
 func deleteUser(ctx echo.Context) error {
-	id, _ := strconv.Atoi(ctx.Param("id"))
+	ss := session.Clone()
+	defer ss.Close()
 
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		log.Println("Could not connect to mongo: ", err.Error())
-		return nil
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-
-	c := session.DB("mydemo").C("user")
-
-	c.RemoveId(id)
+	id := ctx.Param("id")
+	c := ss.DB("mydemo").C("user")
+	c.Remove(bson.M{"name": id})
 
 	return ctx.NoContent(http.StatusNoContent)
 }
 
+func getListUser(ctx echo.Context) error {
+	// Cach 1:
+	ss := session.Clone()
+	defer ss.Close()
+
+	var usrs []User
+	c := ss.DB("mydemo").C("user")
+	c.Find(bson.M{}).All(&usrs)
+
+	// Cach 2: ERROR
+	// var usrs []User
+	// c := session.DB("mydemo").C("user")
+	// c.Find(bson.M{}).All(&usrs)
+
+	return ctx.JSON(http.StatusOK, usrs)
+}
+
+func init() {
+	ssinit, err := mgo.Dial("localhost:27017")
+	// s1.SetMode(mgo.Monotonic, true)
+	if err != nil {
+		log.Println("Could not connect to mongo: ", err.Error())
+	}
+	session = ssinit
+}
 func main() {
+
+	defer session.Close()
 
 	// Echo instance
 	e := echo.New()
@@ -131,4 +124,5 @@ func main() {
 
 	// Start server
 	e.Logger.Fatal(e.Start(":8081"))
+
 }

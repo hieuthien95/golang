@@ -3,6 +3,11 @@ package main
 import "fmt"
 
 func main() {
+	defer func() {
+		action := recover()
+		fmt.Println("recover: stopped", action)
+	}()
+
 	var action int
 	fmt.Println("Enter 1 for Student and 2 for Professional")
 	fmt.Scanln(&action)
@@ -15,8 +20,4 @@ func main() {
 	default:
 		panic(fmt.Sprintf("I am a  %d", action))
 	}
-	defer func() {
-		action := recover()
-		fmt.Println("stopped", action)
-	}()
 }

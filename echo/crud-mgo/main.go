@@ -125,4 +125,34 @@ func main() {
 	// Start server
 	e.Logger.Fatal(e.Start(":8081"))
 
+	// fmt.Println("enter main - connecting to mongo")
+	// var usrs []User
+
+	// // tried doing this - doesn't work as intended
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		fmt.Println("Detected panic")
+	// 		var ok bool
+	// 		err, ok := r.(error)
+	// 		if !ok {
+	// 			fmt.Printf("pkg:  %v,  error: %s", r, err)
+	// 		}
+	// 	}
+	// }()
+
+	// maxWait := time.Duration(5 * time.Second)
+	// session, sessionErr := mgo.DialWithTimeout("localhost:27017", maxWait)
+	// defer session.Close()
+	// if sessionErr == nil {
+	// 	session.SetMode(mgo.Monotonic, true)
+	// 	coll := session.DB("mydemo").C("user")
+	// 	if coll != nil {
+	// 		fmt.Println("Got a collection object")
+
+	// 		coll.Find(bson.M{}).All(&usrs)
+	// 	}
+	// } else { // never gets here
+	// 	fmt.Println("Unable to connect to local mongo instance!")
+	// }
+
 }

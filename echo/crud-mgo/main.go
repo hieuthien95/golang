@@ -93,6 +93,80 @@ func getListUser(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, usrs)
 }
 
+func bulkUser(ctx echo.Context) error {
+	ss := session.Clone()
+	defer ss.Close()
+
+	var usr = &User{}
+	ctx.Bind(usr)
+
+	bulk := ss.DB("mydemo").C("user").Bulk()
+
+	bulk.Insert(usr)
+	bulk.Update(usr, bson.M{"$set": bson.M{"name": "User_" + usr.Name}})
+	bulk.Remove(bson.M{"name": "Thien"})
+
+	bulk.Run()
+
+	return ctx.JSON(http.StatusCreated, nil)
+}
+
+func aggregateUser(ctx echo.Context) error {
+	ss := session.Clone()
+	defer ss.Close()
+
+	c := ss.DB("mydemo").C("user")
+
+	pipeline := []bson.M{
+		// {"$match": bson.M{"address": "MT"}},
+		{"$group": bson.M{
+			"_id":   "$address",
+			"total": bson.M{"$sum": "$age"},
+		},
+		},
+		{"$sort": bson.M{"age": 1}},
+	}
+	pipe := c.Pipe(pipeline)
+
+	result := []bson.M{}
+	_ = pipe.All(&result)
+
+	return ctx.JSON(http.StatusCreated, result)
+}
+
+func register(ctx echo.Context) error {
+	ss := session.Clone()
+	defer ss.Close()
+
+	d := ss.DB("mydemo")
+
+	err := d.AddUser("hieuthien95", "123456789", false)
+
+	return ctx.JSON(http.StatusCreated, err)
+}
+
+func login(ctx echo.Context) error {
+	ss := session.Clone()
+	defer ss.Close()
+
+	d := ss.DB("mydemo")
+
+	err := d.Login("hieuthien95", "123456789")
+
+	return ctx.JSON(http.StatusCreated, err)
+}
+
+func logout(ctx echo.Context) error {
+	ss := session.Clone()
+	defer ss.Close()
+
+	d := ss.DB("mydemo")
+
+	d.Logout()
+
+	return ctx.JSON(http.StatusCreated, nil)
+}
+
 func init() {
 	ssinit, err := mgo.Dial("localhost:27017")
 	// s1.SetMode(mgo.Monotonic, true)
@@ -122,11 +196,15 @@ func main() {
 	e.PUT("/users/:id", updateUser)
 	e.DELETE("/users/:id", deleteUser)
 
+	e.POST("/users/bulk", bulkUser)
+	e.GET("/users/aggregate", aggregateUser)
+
+	e.POST("/register", register)
+	e.POST("/login", login)
+	e.GET("/logout", logout)
+
 	// Start server
 	e.Logger.Fatal(e.Start(":8081"))
-
-	// fmt.Println("enter main - connecting to mongo")
-	// var usrs []User
 
 	// // tried doing this - doesn't work as intended
 	// defer func() {
@@ -139,20 +217,5 @@ func main() {
 	// 		}
 	// 	}
 	// }()
-
-	// maxWait := time.Duration(5 * time.Second)
-	// session, sessionErr := mgo.DialWithTimeout("localhost:27017", maxWait)
-	// defer session.Close()
-	// if sessionErr == nil {
-	// 	session.SetMode(mgo.Monotonic, true)
-	// 	coll := session.DB("mydemo").C("user")
-	// 	if coll != nil {
-	// 		fmt.Println("Got a collection object")
-
-	// 		coll.Find(bson.M{}).All(&usrs)
-	// 	}
-	// } else { // never gets here
-	// 	fmt.Println("Unable to connect to local mongo instance!")
-	// }
 
 }

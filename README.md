@@ -67,3 +67,42 @@ Thực hành: Xây dựng ứng dụng Todo với GraphQL
 ### Xây dựng đồ án cuối khóa cá nhân và thuyết trình
 
 Xây dựng phần mềm nguồn mở của riêng bạn với Golang và thuyết trình sản phẩm.
+
+# build golang
+
+# vendor
+```
+$ go mod init go-module
+go: creating new go.mod: module go-module
+
+$ go build
+go: finding github.com/labstack/gommon/color latest
+go: finding github.com/labstack/gommon/log latest
+go: finding golang.org/x/crypto/acme/autocert latest
+go: finding golang.org/x/crypto/acme latest
+go: finding golang.org/x/crypto latest
+go: downloading golang.org/x/crypto v0.0.0-20190313024323-a1f597ede03a
+go: extracting golang.org/x/crypto v0.0.0-20190313024323-a1f597ede03a
+go: finding github.com/valyala/fasttemplate v1.0.1
+go: finding github.com/mattn/go-isatty v0.0.7
+go: downloading github.com/mattn/go-isatty v0.0.7
+go: downloading github.com/valyala/fasttemplate v1.0.1
+go: extracting github.com/mattn/go-isatty v0.0.7
+go: extracting github.com/valyala/fasttemplate v1.0.1
+
+$ go mod vendor
+go: downloading golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223
+go: extracting golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223
+
+$ go run main.go
+
+   ____    __
+  / __/___/ /  ___
+ / _// __/ _ \/ _ \
+/___/\__/_//_/\___/ v3.3.10-dev
+High performance, minimalist Go web framework
+https://echo.labstack.com
+____________________________________O/_______
+                                    O\
+⇨ http server started on [::]:9090
+```

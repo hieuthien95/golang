@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func Contains(valInput interface{}, arrInput ...interface{}) bool {
+func Contains1(valInput interface{}, arrInput ...interface{}) bool {
 	for _, value := range arrInput {
 		// C1:
 		// switch {

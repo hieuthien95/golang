@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 func Contains(valInput interface{}, arrInput ...interface{}) bool {
 	for _, value := range arrInput {
@@ -62,8 +65,23 @@ func Contains(valInput interface{}, arrInput ...interface{}) bool {
 	return false
 }
 
-func Reduce(valRef *float64, list []int) {
-	var tmp int
+func Reduce(valRef *float64, list interface{}) {
+	listValue := reflect.ValueOf(list)
+	listType := listValue.Type()
+
+	var tmp interface{}
+
+	switch listType.Kind() {
+	case reflect.Slice:
+		for i := 0; i < listValue.Len(); i++ {
+			tmp += listValue.Index(i).Interface()
+		}
+
+	case reflect.Array:
+		for _, value := range list {
+			tmp += value
+		}
+	}
 	for _, value := range list {
 		tmp += value
 	}

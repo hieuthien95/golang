@@ -1,17 +1,7 @@
-package main
-
-import (
-	"net"
-	"log"
-	"fmt"
-	"bufio"
-)
-
-var (
-	conns []net.Conn
-	connCh = make(chan net.Conn)
+  []net.Conn
+	connCh  = make(chan net.Conn)
 	closeCh = make(chan net.Conn)
-	msgCh = make(chan string)
+	msgCh   = make(chan string)
 )
 
 func main() {
@@ -28,21 +18,23 @@ func main() {
 			}
 
 			conns = append(conns, conn)
-			connCh <-conn
+			connCh <- conn
 		}
 	}()
-		
+
 	for {
 		select {
-			case conn := <- connCh:
-				go onMessage(conn)
+		case conn := <-connCh:
+			fmt.Println("new connect")
+			go onMessage(conn)
 
-			case msg := <- msgCh:
-				fmt.Print(msg)	
+		case msg := <-msgCh:
+			fmt.Println("------------")
+			fmt.Print(msg)
 
-			case conn := <- closeCh:
-				fmt.Println("client exit")
-				removeConn(conn)	
+		case conn := <-closeCh:
+			fmt.Println("client exit")
+			removeConn(conn)
 		}
 	}
 }
@@ -83,12 +75,3 @@ func onMessage(conn net.Conn) {
 
 	closeCh <- conn
 }
-
-
-
-
-
-
-
-
-

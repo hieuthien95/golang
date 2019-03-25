@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -168,13 +169,21 @@ func logout(ctx echo.Context) error {
 }
 
 func init() {
-	ssinit, err := mgo.Dial("localhost:27017")
+	// ssinit, err := mgo.Dial("localhost:27017")
+	ssinit, err := mgo.DialWithInfo(&mgo.DialInfo{
+		Addrs:    []string{"localhost:27017"},
+		Database: "mydemo",
+		Username: "root",
+		Password: "123456789",
+		Timeout:  60 * time.Second,
+	})
 	// s1.SetMode(mgo.Monotonic, true)
-	if err != nil {
-		log.Println("Could not connect to mongo: ", err.Error())
+	if err != nil || ssinit == nil {
+		panic(fmt.Sprint("Could not connect to mongo: \n\n", err.Error()))
 	}
 	session = ssinit
 }
+
 func main() {
 
 	defer session.Close()

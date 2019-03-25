@@ -6,17 +6,17 @@ import (
 	"net/http"
 	"time"
 
-	"crawl-module/crawler"
+	"nordiccoder/week2/exercise/crawler"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 var (
-	db             *gorm.DB
-	chanUrls       chan Url
-	chanActicles   chan Article
-	chanUrlsUpdate chan Url
+	db               *gorm.DB
+	chanUrls         chan Url
+	chanSaveActicles chan Article
+	chanUrlsUpdate   chan Url
 )
 
 type (
@@ -42,7 +42,7 @@ func main() {
 
 	chanUrls = make(chan Url)
 	chanUrlsUpdate = make(chan Url)
-	chanActicles = make(chan Article)
+	chanSaveActicles = make(chan Article)
 
 	go load()
 	go crawl()
@@ -61,8 +61,8 @@ func main() {
 func load() {
 	urls := []Url{}
 
-	// if err := db.Find(&urls, "status <> 1").Error; err != nil {
-	if err := db.Find(&urls).Error; err != nil {
+	// if err := db.Find(&urls).Error; err != nil {
+	if err := db.Find(&urls, "status <> 1").Error; err != nil {
 		panic("db.Find(&urls).Error")
 	}
 
@@ -91,7 +91,7 @@ func crawl() {
 		article.Author = data.Author
 		article.Content = data.Content
 
-		chanActicles <- article
+		chanSaveActicles <- article
 	}
 }
 
@@ -99,7 +99,7 @@ func save() {
 	articles := []Article{}
 
 	for {
-		articles = append(articles, <-chanActicles)
+		articles = append(articles, <-chanSaveActicles)
 
 		if len(articles) >= 5 {
 			for _, atc := range articles {

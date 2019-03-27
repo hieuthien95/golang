@@ -14,10 +14,16 @@ import (
 
 type (
 	User struct {
-		Name    string  `json:"name"`
-		Age     int     `json:"age"`
-		Address string  `json:"address"`
-		Exp     float32 `json:"exp"`
+		ID      string `json:"_id" bson:"_id"`
+		Name    string `json:"name"`
+		Age     int    `json:"age"`
+		Address string `json:"address"`
+		Exp     int    `json:"exp"`
+	}
+
+	Counters struct {
+		ID            string `json:"_id" bson:"_id"`
+		SequenceValue int32  `json:"sequence_value" bson:"sequence_value"`
 	}
 )
 
@@ -38,15 +44,34 @@ func getUser(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, usr)
 }
 
+func seqDocId(docid string) int32 {
+	ss := session.Clone()
+	defer ss.Close()
+
+	var cnts Counters
+	c0 := ss.DB("mydemo").C("counters")
+	change := mgo.Change{
+		Update:    bson.M{"$inc": bson.M{"sequence_value": 1}},
+		ReturnNew: true,
+	}
+	c0.Find(bson.M{"_id": docid}).Apply(change, &cnts)
+	// c0.UpdateId("userid", bson.M{"$inc": bson.M{"sequence_value": 1}})
+	return cnts.SequenceValue
+}
+
 func createUser(ctx echo.Context) error {
 	ss := session.Clone()
 	defer ss.Close()
 
+	seq := seqDocId("userid")
+	fmt.Println(seq)
+
 	var usr = &User{}
 	ctx.Bind(usr)
+	usr.ID = fmt.Sprint(seq)
 
-	c := ss.DB("mydemo").C("user")
-	c.Insert(usr)
+	c1 := ss.DB("mydemo").C("user")
+	c1.Insert(usr)
 
 	return ctx.JSON(http.StatusCreated, nil)
 }
@@ -78,6 +103,7 @@ func deleteUser(ctx echo.Context) error {
 }
 
 func getListUser(ctx echo.Context) error {
+
 	// Cach 1:
 	ss := session.Clone()
 	defer ss.Close()

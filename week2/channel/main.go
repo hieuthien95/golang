@@ -36,8 +36,12 @@ func showInputChannel(c chan string, groupTest *sync.WaitGroup) {
 
 	for {
 		// pause den khi channel c co gia tri
-		intput := <-c
-		fmt.Println("\nShow Input Channel: ", intput)
+		input := <-c
+		fmt.Println("\nShow Input Channel: ", input)
+
+		if input == "end" {
+			break
+		}
 	}
 
 	// cau lenh phia duoi Done() co the se khong chay, vi main() finish som hon

@@ -25,7 +25,7 @@ func DateFormat(input string) interface{} {
 	return time
 }
 
-func main() {
-	time := DateFormat("Thứ Sáu, 15/3/2019, 11:11")
-	fmt.Println(time)
-}
+// func main() {
+// 	time := DateFormat("Thứ Sáu, 15/3/2019, 11:11")
+// 	fmt.Println(time)
+// }

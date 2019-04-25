@@ -131,6 +131,10 @@ func userMiddleware(c *gin.Context) {
 	tokenString := c.GetHeader("token")
 
 	// check trong DB co token do khong // TODO?
+	repo := &repo.UserRepoImpl{
+		DB: db,
+	}
+	repo.DB
 
 	// sample token is expired.  override time so it parses as valid
 	// token, err := jwt.ParseWithClaims(tokenString, &MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {

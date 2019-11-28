@@ -1,0 +1,65 @@
+export GOPATH=/Users/username/go
+export PATH=$GOPATH/bin:$PATH
+export GOBIN=$GOPATH/bin
+
+===============================================================================================
+
+STEP 1: 
+    brew install protobuf
+
+STEP 2: View url download https://github.com/protocolbuffers/protobuf/releases
+
+    PROTOC_ZIP=protoc-3.11.0-osx-x86_64.zip
+    curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.11.0/$PROTOC_ZIP
+    sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
+    sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
+    rm -f $PROTOC_ZIP
+
+STEP 3: 
+    export GOPATH=/Users/username/go
+    export PATH=$GOPATH/bin:$PATH
+    export GOBIN=$GOPATH/bin
+
+    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+    go get -u github.com/golang/protobuf/protoc-gen-go
+
+STEP 4:
+    protoc \
+    -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+    -I. \
+    --go_out=plugins=grpc:. ./proto/note.proto
+
+DONE
+
+===============================================================================================
+
+STEP 5: 
+    Copy:    
+        $GOPATH/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.12.1/third_party/googleapis
+        Or $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis
+    To:
+        /usr/local/include/google
+    Like: 
+    ( 
+      thienbui> google % pwd
+      /usr/local/include/google
+
+      thienbui> google % ls
+      api		protobuf	rpc
+    )
+
+
+STEP  Finally: 
+    protoc --go_out=plugins=grpc:. ./proto/note.proto
+
+
+===============================================================================================
+
+https://github.com/protocolbuffers/protobuf/releases
+http://google.github.io/proto-lens/installing-protoc.html
+https://developers.google.com/protocol-buffers/docs/gotutorial
+https://github.com/grpc-ecosystem/grpc-gateway
+
+
+

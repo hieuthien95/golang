@@ -129,6 +129,7 @@ func checkLogs(url string, authen string) queue {
 }
 
 func main() {
+	fmt.Println("Running ...")
 	token = "880494249:AAHY7N-75FacHJNK2HqefQl96mxf7flEC_c"
 
 	func() {

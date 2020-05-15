@@ -64,7 +64,9 @@ type Item struct {
 
 func getUpdate() {
 
-	arr := []Station{}
+	arr := []Station{
+		{},
+	}
 
 	for _, check := range arr {
 		for _, item := range check.items {

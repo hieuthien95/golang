@@ -34,13 +34,18 @@ func sendMessage(chatID int, msg string) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
+		fmt.Print(err.Error())
 		return
 	}
 
 	req.Header.Add("cache-control", "no-cache")
 	req.Header.Add("Postman-Token", "54526234-aa86-47c7-814f-702d8d3523f3")
 
-	http.DefaultClient.Do(req)
+	_, err = http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Print(err.Error())
+		return
+	}
 }
 
 // Check ...
@@ -59,22 +64,31 @@ type Item struct {
 
 func getUpdate() {
 
-	arr := []Check{}
+	arr := []Check{
+	}
 
 	for _, check := range arr {
 		for _, item := range check.items {
 
 			for _, qType := range item.queueTypes {
-				url := item.baseURL + "?queueType=" + qType + "&getTotal=true"
+				url := item.baseURL + "?queueType=" + qType + "&getTotal=true&limit=1"
 
 				queue := checkLogs(url, check.token)
 				if len(queue.Data) > 0 && len(queue.Data[0].Log) >= 5 {
-
 					message := check.env + " - " + item.system + " - " + qType
 					content := queue.Data[0].Log[0]
 
+					// send message
 					sendMessage(702464361, message)
 					sendMessage(702464361, content)
+
+					// console
+					fmt.Println(message)
+
+					byte, _ := json.Marshal(queue)
+					fmt.Println(string(byte))
+
+					fmt.Println()
 				}
 			}
 		}
@@ -87,6 +101,7 @@ func checkLogs(url string, authen string) queue {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
+		fmt.Print(err.Error())
 		return queue
 	}
 
@@ -94,17 +109,20 @@ func checkLogs(url string, authen string) queue {
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
+		fmt.Print(err.Error())
 		return queue
 	}
 
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
+		fmt.Print(err.Error())
 		return queue
 	}
 
 	err = json.Unmarshal(body, &queue)
 	if err != nil {
+		fmt.Print(err.Error())
 		return queue
 	}
 

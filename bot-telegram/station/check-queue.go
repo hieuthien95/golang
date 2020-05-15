@@ -71,18 +71,29 @@ func getUpdate() {
 
 			for _, qType := range item.queueTypes {
 				url := item.baseURL + "?queueType=" + qType + "&getTotal=true&limit=1"
+				infoMessage := check.env + " - " + item.system + " - " + qType
 
-				queue := checkLogs(url, check.token)
-				if len(queue.Data) > 0 && len(queue.Data[0].Log) >= 5 {
-					message := check.env + " - " + item.system + " - " + qType
+				queue, err := checkLogs(url, check.token)
+				if err != nil {
+					// send message
+					sendMessage(702464361, infoMessage)
+					sendMessage(702464361, err.Error())
+
+					// console
+					fmt.Println(infoMessage)
+					fmt.Println(err.Error())
+
+					fmt.Println()
+
+				} else if len(queue.Data) > 0 && len(queue.Data[0].Log) >= 5 {
 					content := queue.Data[0].Log[0]
 
 					// send message
-					sendMessage(702464361, message)
+					sendMessage(702464361, infoMessage)
 					sendMessage(702464361, content)
 
 					// console
-					fmt.Println(message)
+					fmt.Println(infoMessage)
 
 					byte, _ := json.Marshal(queue)
 					fmt.Println(string(byte))
@@ -95,37 +106,33 @@ func getUpdate() {
 
 }
 
-func checkLogs(url string, authen string) queue {
+func checkLogs(url string, authen string) (queue, error) {
 	var queue queue
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Print(err.Error())
-		return queue
+		return queue, err
 	}
 
 	req.Header.Add("Authorization", authen)
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Print(err.Error())
-		return queue
+		return queue, err
 	}
 
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		fmt.Print(err.Error())
-		return queue
+		return queue, err
 	}
 
 	err = json.Unmarshal(body, &queue)
 	if err != nil {
-		fmt.Print(err.Error())
-		return queue
+		return queue, err
 	}
 
-	return queue
+	return queue, nil
 }
 
 func main() {

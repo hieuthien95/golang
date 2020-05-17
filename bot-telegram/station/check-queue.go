@@ -10,6 +10,8 @@ import (
 
 var (
 	token string
+	// +7
+	tz = time.FixedZone("UTC+7", +7*60*60)
 )
 
 type queue struct {
@@ -71,7 +73,7 @@ func getUpdate() {
 
 			for _, qType := range item.queueTypes {
 				url := item.baseURL + "?queueType=" + qType + "&getTotal=true&limit=1"
-				infoMessage := check.env + " - " + item.system + " - " + qType
+				infoMessage := check.env + " - " + item.system + " - " + qType + " - " + fmt.Sprint(time.Now().In(tz))
 
 				queue, err := checkLogs(url, check.token)
 				if err != nil {

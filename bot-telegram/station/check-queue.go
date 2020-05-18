@@ -97,6 +97,14 @@ func getUpdateMessage() {
 
 	for _, elm := range update.Result {
 		offset = elm.UpdateID + 1
+
+		// getUpdateActiion
+		if elm.Message.Text == "/check" {
+			getUpdateActiion()
+			sendMessage(-410940764, "Done")
+			return
+		}
+
 		fmt.Println(offset, elm.Message.From.Username, elm.Message.Text)
 
 		sendMessage(elm.Message.From.ID, elm.Message.Text+" ?")
@@ -151,8 +159,8 @@ func getUpdateActiion() {
 				queue, err := checkLogs(url, check.token)
 				if err != nil {
 					// send message
-					sendMessage(702464361, infoMessage)
-					sendMessage(702464361, err.Error())
+					sendMessage(-410940764, infoMessage)
+					sendMessage(-410940764, err.Error())
 
 					// console
 					fmt.Println(infoMessage)
@@ -164,8 +172,8 @@ func getUpdateActiion() {
 					content := queue.Data[0].Log[0]
 
 					// send message
-					sendMessage(702464361, infoMessage)
-					sendMessage(702464361, content)
+					sendMessage(-410940764, infoMessage)
+					sendMessage(-410940764, content)
 
 					// console
 					fmt.Println(infoMessage)
@@ -224,7 +232,7 @@ func main() {
 	func() {
 		for {
 			getUpdateActiion()
-			time.Sleep(time.Second * 60 * 60)
+			time.Sleep(time.Second * 60 * 30)
 		}
 	}()
 }

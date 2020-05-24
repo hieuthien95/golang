@@ -98,9 +98,15 @@ func getUpdateMessage() {
 	for _, elm := range update.Result {
 		offset = elm.UpdateID + 1
 
-		// getUpdateActiion
+		// getUpdateActionStation
 		if elm.Message.Text == "/check" {
-			getUpdateActiion()
+			getUpdateActionStation()
+			sendMessage(-410940764, "Done")
+			return
+		}
+		// getUpdateActionPayroll
+		if elm.Message.Text == "/check-payroll" {
+			getUpdateActionPayroll()
 			sendMessage(-410940764, "Done")
 			return
 		}
@@ -115,20 +121,20 @@ func getUpdateMessage() {
 }
 
 type queue struct {
-	Status string `json:"status"`
+	Status string `json:"status,omitempty"`
 	Data   []struct {
-		ID              string    `json:"_id"`
-		ConsumerVersion string    `json:"consumer_version"`
-		CreatedTime     time.Time `json:"created_time"`
+		ID              string    `json:"_id,omitempty"`
+		ConsumerVersion string    `json:"consumer_version,omitempty"`
+		CreatedTime     time.Time `json:"created_time,omitempty"`
 		Data            struct {
-			Data interface{} `json:"data"`
-		} `json:"data"`
-		LastUpdatedTime time.Time `json:"last_updated_time"`
-		ProcessBy       string    `json:"process_by"`
-		Log             []string  `json:"log"`
-	} `json:"data"`
-	Message string `json:"message"`
-	Total   int    `json:"total"`
+			Data interface{} `json:"data,omitempty"`
+		} `json:"data,omitempty"`
+		LastUpdatedTime time.Time `json:"last_updated_time,omitempty"`
+		ProcessBy       string    `json:"process_by,omitempty"`
+		Log             []string  `json:"log,omitempty"`
+	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
+	Total   int    `json:"total,omitempty"`
 }
 
 // Station ...
@@ -145,7 +151,7 @@ type Item struct {
 	queueTypes []string
 }
 
-func getUpdateActiion() {
+func getUpdateActionStation() {
 
 	arr := []Station{}
 
@@ -153,10 +159,10 @@ func getUpdateActiion() {
 		for _, item := range check.items {
 
 			for _, qType := range item.queueTypes {
-				url := item.baseURL + "?queueType=" + qType + "&getTotal=true&limit=1"
+				url := item.baseURL + "?queueType=" + qType + "&limit=1"
 				infoMessage := check.env + " - " + item.system + " - " + qType + " - " + fmt.Sprint(time.Now().In(tz))
 
-				queue, err := checkLogs(url, check.token)
+				queue, err := callRest(url, check.token)
 				if err != nil {
 					// send message
 					sendMessage(-410940764, infoMessage)
@@ -189,7 +195,43 @@ func getUpdateActiion() {
 
 }
 
-func checkLogs(url string, authen string) (queue, error) {
+func getUpdateActionPayroll() {
+
+	arr := []Station{}
+
+	for _, check := range arr {
+		for _, item := range check.items {
+
+			url := item.baseURL
+
+			resp, err := callRest(url, check.token)
+			if err != nil {
+				// send message
+				sendMessage(-410940764, err.Error())
+
+				// console
+				fmt.Println(err.Error())
+
+				fmt.Println()
+
+			} else {
+				byte, _ := json.Marshal(resp.Data)
+				fmt.Println(string(byte))
+
+				// send message
+				sendMessage(-410940764, string(byte))
+
+				// console
+				fmt.Println(string(byte))
+
+				fmt.Println()
+			}
+		}
+	}
+
+}
+
+func callRest(url string, authen string) (queue, error) {
 	var queue queue
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -231,8 +273,8 @@ func main() {
 
 	func() {
 		for {
-			getUpdateActiion()
-			time.Sleep(time.Second * 60 * 30)
+			getUpdateActionStation()
+			time.Sleep(time.Second * 60 * 10)
 		}
 	}()
 }

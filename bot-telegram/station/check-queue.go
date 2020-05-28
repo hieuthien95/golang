@@ -123,9 +123,13 @@ func getUpdateMessage() {
 			return
 		}
 
-		fmt.Println(offset, elm.Message.From.Username, elm.Message.Text)
+		// channel
+		if strings.Contains(elm.Message.Text, "/health") {
+			sendMessage(elm.Message.From.ID, elm.Message.Text+" ?")
+			return
+		}
 
-		sendMessage(elm.Message.From.ID, elm.Message.Text+" ?")
+		fmt.Println(offset, elm.Message.From.Username, elm.Message.Text)
 	}
 
 	// fmt.Println(res)

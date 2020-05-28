@@ -373,7 +373,7 @@ func callRestChannel(url string, bodyData map[string]interface{}) (data LichPhat
 }
 
 func getUpdateActionChannel(kenh string) {
-	now := time.Now()
+	now := time.Now().In(tz)
 	hnow := now.Format("15:04:05")
 
 	kenhs := []Kenh{

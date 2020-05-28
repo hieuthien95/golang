@@ -412,7 +412,7 @@ func getUpdateActionChannel(kenh string) {
 			} else {
 				datas := strings.ToUpper(k.Ten) + "\n ============================= \n\n"
 				for _, l := range resp.LichPhatSong.EventList {
-					if hnow <= l.StartTime || hnow <= l.EndTime {
+					if hnow >= l.EndTime {
 						datas += l.StartTime + " - " + l.Name + "\n\n"
 					}
 				}

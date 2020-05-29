@@ -207,13 +207,12 @@ func getUpdateActionStation() {
 
 			for _, qType := range item.queueTypes {
 				url := item.baseURL + "?queueType=" + qType + "&limit=1"
-				infoMessage := check.env + " - " + item.system + " - " + qType + " - " + fmt.Sprint(time.Now().In(tz))
+				infoMessage := check.env + " - " + item.system + " - " + qType + "\n" + fmt.Sprint(time.Now().In(tz))
 
 				resp, err := callRestStation(url, check.token)
 				if err != nil {
 					// send message
-					sendMessage(-410940764, infoMessage)
-					sendMessage(-410940764, err.Error())
+					sendMessage(-410940764, infoMessage+"\n\n"+err.Error())
 
 					// console
 					fmt.Println(infoMessage)
@@ -222,14 +221,13 @@ func getUpdateActionStation() {
 					fmt.Println()
 
 				} else if len(resp.Data) > 0 && len(resp.Data[0].Log) >= 5 {
+					byte, _ := json.Marshal(resp.Data[0].Data)
 
 					// send message
-					sendMessage(-410940764, infoMessage)
-					sendMessage(-410940764, resp.Data[0].Log[0])
+					sendMessage(-410940764, infoMessage+"\n\n"+resp.Data[0].Log[0]+"\n\n"+string(byte))
 
 					// console
 					fmt.Println(infoMessage)
-					byte, _ := json.Marshal(resp)
 					fmt.Println(string(byte))
 
 					fmt.Println()

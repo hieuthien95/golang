@@ -375,9 +375,9 @@ func getUpdateActionChannel(kenh string) {
 	hnow := now.Format("15:04:05")
 
 	kenhs := []Kenh{
-		{Ma: 94, Ten: "Animal"},
-		{Ma: 92, Ten: "Discovery"},
-		{Ma: 90, Ten: "Cartoon Network"},
+		{Ma: 94, Ten: "Animal - fun"},
+		{Ma: 92, Ten: "Discovery - fun"},
+		{Ma: 90, Ten: "Cartoon Network - fun"},
 
 		{Ma: 250, Ten: "Cinemax - film"},
 		{Ma: 50, Ten: "AXN - film"},

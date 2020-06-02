@@ -101,12 +101,20 @@ func getUpdateMessage() {
 			sendMessage(-410940764, "Done")
 			return
 		}
+		// getUpdateActionStation
+		if elm.Message.Text == "/stationRTP" {
+			message := checkRTP()
+			sendMessage(-410940764, message)
+			return
+		}
+
 		// getUpdateActionPayroll
 		if elm.Message.Text == "/payroll" {
 			getUpdateActionPayroll()
 			sendMessage(-410940764, "Done")
 			return
 		}
+
 		// channel
 		if strings.Contains(elm.Message.Text, "/chan") {
 			getUpdateActionChannel(elm.Message.Text)
@@ -114,7 +122,7 @@ func getUpdateMessage() {
 			return
 		}
 
-		// channel
+		// health
 		if strings.Contains(elm.Message.Text, "/health") {
 			sendMessage(elm.Message.From.ID, elm.Message.Text+" ?")
 			return
@@ -126,5 +134,3 @@ func getUpdateMessage() {
 	// fmt.Println(res)
 	// fmt.Println(string(body))
 }
-
-// ========================================================================================================================

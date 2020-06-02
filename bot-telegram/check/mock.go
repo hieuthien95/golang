@@ -2,6 +2,8 @@ package check
 
 var arrStation = []Env{}
 
+var arrStation2 = []Env{}
+
 var arrPayroll = []Env{}
 
 var arrKenh = []Kenh{

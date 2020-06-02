@@ -10,8 +10,6 @@ import (
 	"time"
 )
 
-// ========================================================================================================================
-
 type LichPhatSongResp struct {
 	LichPhatSong struct {
 		ChannelID int    `json:"ChannelId"`

@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-// ========================================================================================================================
-
 type QueueResp struct {
 	Status string `json:"status,omitempty"`
 	Data   []struct {
@@ -54,8 +52,74 @@ func callRestStation(url string, authen string) (resp QueueResp, err error) {
 	return resp, nil
 }
 
-func getUpdateActionStation() {
+func checkRTP() string {
+	var message string
 
+	if len(arrStation2) != 1 || len(arrStation2[0].items) != 2 {
+		message = "Invalid len"
+
+		// send message
+		sendMessage(-410940764, message)
+
+		// console
+		fmt.Println(message)
+		fmt.Println()
+
+		return message
+	}
+	check := arrStation2[0]
+
+	item := check.items[0]
+	url := item.baseURL
+	resp1, err := callRestStation(url, check.token)
+	if err != nil {
+		message = url + "\n\n" + err.Error()
+
+		// send message
+		sendMessage(-410940764, message)
+
+		// console
+		fmt.Println(message)
+		fmt.Println()
+
+		return message
+	}
+
+	item = check.items[1]
+	url = item.baseURL
+	resp2, err := callRestStation(url, check.token)
+	if err != nil {
+		message = url + "\n\n" + err.Error()
+
+		// send message
+		sendMessage(-410940764, message)
+
+		// console
+		fmt.Println(message)
+		fmt.Println()
+
+		return message
+	}
+
+	message = fmt.Sprintf("Queue(%v) - RTP(%v)", resp1.Total, resp2.Total)
+	if resp1.Total < resp2.Total || resp1.Total == 0 || resp2.Total == 0 {
+		// send message
+		sendMessage(-410940764, message)
+
+		// console
+		fmt.Println(message)
+		fmt.Println()
+
+		return message
+	}
+
+	return message
+}
+
+func getUpdateActionStation() {
+	var message string
+
+	//
 	for _, check := range arrStation {
 		for _, item := range check.items {
 
@@ -65,29 +129,31 @@ func getUpdateActionStation() {
 
 				resp, err := callRestStation(url, check.token)
 				if err != nil {
+					message = infoMessage + "\n\n" + err.Error()
+
 					// send message
-					sendMessage(-410940764, infoMessage+"\n\n"+err.Error())
+					sendMessage(-410940764, message)
 
 					// console
-					fmt.Println(infoMessage)
-					fmt.Println(err.Error())
-
+					fmt.Println(message)
 					fmt.Println()
 
 				} else if len(resp.Data) > 0 && len(resp.Data[0].Log) >= 5 {
 					byte, _ := json.Marshal(resp.Data[0].Data)
 
+					message = infoMessage + "\n\n" + resp.Data[0].Log[0] + "\n\n" + string(byte)
+
 					// send message
-					sendMessage(-410940764, infoMessage+"\n\n"+resp.Data[0].Log[0]+"\n\n"+string(byte))
+					sendMessage(-410940764, message)
 
 					// console
-					fmt.Println(infoMessage)
-					fmt.Println(string(byte))
-
+					fmt.Println(message)
 					fmt.Println()
 				}
 			}
 		}
 	}
 
+	//
+	checkRTP()
 }

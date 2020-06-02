@@ -55,7 +55,6 @@ func getUpdateActionPayroll() {
 
 				// console
 				fmt.Println(err.Error())
-
 				fmt.Println()
 
 			} else {
@@ -69,7 +68,6 @@ func getUpdateActionPayroll() {
 
 				// console
 				fmt.Println(resp.Data)
-
 				fmt.Println()
 			}
 		}

@@ -58,7 +58,7 @@ func getUpdateActionPayroll() {
 				fmt.Println()
 
 			} else {
-				datas := check.env + "\n"
+				datas := check.env + "\n\n" + resp.Message + "\n\n"
 				for _, s := range resp.Data {
 					datas += s + "\n"
 				}

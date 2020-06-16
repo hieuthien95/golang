@@ -141,7 +141,7 @@ func getUpdateActionStation() {
 				} else if len(resp.Data) > 0 && len(resp.Data[0].Log) >= 5 {
 					byte, _ := json.Marshal(resp.Data[0].Data)
 
-					message = infoMessage + "\n" + fmt.Sprint(len(resp.Data)) + "\n\n" + resp.Data[0].Log[0] + "\n\n" + string(byte)
+					message = infoMessage + "\n" + "len: " + fmt.Sprint(len(resp.Data)) + "\n\n" + resp.Data[0].Log[0] + "\n\n" + string(byte)
 
 					// send message
 					sendMessage(-410940764, message)

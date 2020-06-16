@@ -124,7 +124,7 @@ func getUpdateActionStation() {
 		for _, item := range check.items {
 
 			for _, qType := range item.queueTypes {
-				url := item.baseURL + "?queueType=" + qType + "&limit=1"
+				url := item.baseURL + "?queueType=" + qType + "&limit=100"
 				infoMessage := check.env + " - " + item.system + " - " + qType + "\n" + fmt.Sprint(time.Now().In(tz))
 
 				resp, err := callRestStation(url, check.token)
@@ -141,7 +141,7 @@ func getUpdateActionStation() {
 				} else if len(resp.Data) > 0 && len(resp.Data[0].Log) >= 5 {
 					byte, _ := json.Marshal(resp.Data[0].Data)
 
-					message = infoMessage + "\n\n" + resp.Data[0].Log[0] + "\n\n" + string(byte)
+					message = infoMessage + "\n" + fmt.Sprint(resp.Total) + "\n\n" + resp.Data[0].Log[0] + "\n\n" + string(byte)
 
 					// send message
 					sendMessage(-410940764, message)

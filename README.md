@@ -108,13 +108,13 @@ ____________________________________O/_______
 ```
 
 # ISSUE
-## go get ussue: permission
+## go get issue: permission
 Mac
 ```
 env GIT_TERMINAL_PROMPT=1 go mod vendor
 env GIT_TERMINAL_PROMPT=1 go get gitlab.ghn.vn/common-projects/go-sdk v0.1.31
 ```
-## go get ussue: 410 gone
+## go get issue: 410 gone
 Mac
 ```
 $ export GO111MODULE=on

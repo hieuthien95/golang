@@ -155,7 +155,7 @@ func (g Graph) DFS(s int) {
 			fmt.Print(vertex, " ")
 			g.isVisited[vertex] = true
 
-			for i := g.n - 1; i >= 1; i-- {
+			for i := g.n - 1; i >= 0; i-- {
 				// cạnh vô hướng
 				key1 := fmt.Sprintf("%v-%v", vertex, i)
 				key2 := fmt.Sprintf("%v-%v", i, vertex)

@@ -78,7 +78,7 @@ void Graph::DFS(int s){
 		if (isVisited[v] == false) {
 			cout << v + 1 << " ";
 			isVisited[v] = true;
-			for (int i = n; i >= 1; i--) {
+			for (int i = n; i >= 0; i--) {
 				if (isVisited[i] == false && A[v][i] != 0) {
 					stack[top++] = i;
 				}

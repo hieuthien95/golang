@@ -71,7 +71,7 @@ func DFS(s int) {
 			fmt.Print(vertex, " ")
 			isVisited[vertex] = true
 
-			for i := n - 1; i >= 1; i-- {
+			for i := n - 1; i >= 0; i-- {
 				// cạnh vô hướng
 				key1 := fmt.Sprintf("%v-%v", vertex, i)
 				key2 := fmt.Sprintf("%v-%v", i, vertex)

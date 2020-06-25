@@ -60,7 +60,7 @@ func DFS(s int) {
 	var stack [100]int
 	var top int
 
-	stack[top] = 2
+	stack[top] = s
 	top++
 
 	for top != 0 {

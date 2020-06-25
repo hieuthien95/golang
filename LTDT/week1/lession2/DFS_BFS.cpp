@@ -71,13 +71,12 @@ void Graph::DFS(int s){
 	int stack[max], top = 0;
 
 	stack[top++] = s;
-	// cout << stack;
 
 
 	while (!top == 0) {
 		int v = stack[--top];
 		if (isVisited[v] == false) {
-			// cout << v + 1 << " ";
+			cout << v + 1 << " ";
 			isVisited[v] = true;
 			for (int i = n; i >= 1; i--) {
 				if (isVisited[i] == false && A[v][i] != 0) {

@@ -15,21 +15,21 @@ func main() {
 	n = 7
 
 	mapGraph = make(map[string]int)
+	mapGraph["0-1"] = 1
 	mapGraph["1-2"] = 1
-	mapGraph["2-3"] = 1
-	mapGraph["3-7"] = 1
-	mapGraph["7-6"] = 1
+	mapGraph["2-6"] = 1
 	mapGraph["6-5"] = 1
 	mapGraph["5-4"] = 1
-	mapGraph["1-7"] = 1
+	mapGraph["4-3"] = 1
+	mapGraph["0-6"] = 1
 
+	mapGraph["1-0"] = 1
 	mapGraph["2-1"] = 1
-	mapGraph["3-2"] = 1
-	mapGraph["7-3"] = 1
-	mapGraph["6-7"] = 1
+	mapGraph["6-2"] = 1
 	mapGraph["5-6"] = 1
 	mapGraph["4-5"] = 1
-	mapGraph["7-1"] = 1
+	mapGraph["3-4"] = 1
+	mapGraph["6-0"] = 1
 
 	// graph = make([][]int, n)
 	// graph = [][]int{
@@ -60,7 +60,7 @@ func DFS(s int) {
 	var stack [100]int
 	var top int
 
-	stack[top] = s
+	stack[top] = 2
 	top++
 
 	for top != 0 {
@@ -73,8 +73,8 @@ func DFS(s int) {
 
 			for i := n - 1; i >= 1; i-- {
 				// cạnh vô hướng
-				key1 := fmt.Sprintf("%v-%v", vertex+1, i+1)
-				key2 := fmt.Sprintf("%v-%v", i+1, vertex+1)
+				key1 := fmt.Sprintf("%v-%v", vertex, i)
+				key2 := fmt.Sprintf("%v-%v", i, vertex)
 				gTmp1 := mapGraph[key1]
 				gTmp2 := mapGraph[key2]
 				// gTmp := graph[vertex][i]
@@ -110,8 +110,8 @@ func BFS(u int) {
 		bottom++
 		for v := 0; v < n; v++ {
 			// cạnh vô hướng
-			key1 := fmt.Sprintf("%v-%v", p+1, v+1)
-			key2 := fmt.Sprintf("%v-%v", v+1, p+1)
+			key1 := fmt.Sprintf("%v-%v", p, v)
+			key2 := fmt.Sprintf("%v-%v", v, p)
 			gTmp1 := mapGraph[key1]
 			gTmp2 := mapGraph[key2]
 			// gTmp := graph[p][v]

@@ -14,12 +14,22 @@ func main() {
 	g := Graph{}
 	g.readFile("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week1/lession2/input.txt")
 
-	g.printMapCombinedVertex()
-	g.printListEdge()
-	g.printAdjacencyMatrix()
-	g.printAdjacencyEdge()
+	g.makeMapCombinedVertex()
+	g.makeListEdge()
+	g.makeAdjacencyMatrix()
+	g.makeAdjacencyEdge()
 
 	fmt.Println()
+
+	g.isVisited = make([]bool, g.n)
+	fmt.Println("Duyet do thi DFS:")
+	g.DFS(0)
+
+	fmt.Println()
+
+	g.isVisited = make([]bool, g.n)
+	fmt.Println("Duyet do thi BFS:")
+	g.BFS(0)
 }
 
 // ========================================================================================
@@ -30,11 +40,14 @@ type Graph struct {
 
 	mapCombinedVertex map[string]int
 	listEdge          []string
-	adjMatrix         [][]int
-	adjEdge           []string
+	adjacencyMatrix   [][]int
+	adjacencyEdge     []string
+
+	n         int
+	isVisited []bool
 }
 
-func (g Graph) printMapCombinedVertex() {
+func (g *Graph) makeMapCombinedVertex() {
 
 	if len(g.input) == 0 {
 		fmt.Println("len=0")
@@ -46,8 +59,9 @@ func (g Graph) printMapCombinedVertex() {
 		fmt.Println(err.Error())
 		return
 	}
+	g.n = n
 
-	graph := make(map[string]int)
+	g.mapCombinedVertex = make(map[string]int)
 
 	for i := 1; i < n; i++ {
 		strLine := strings.Replace(g.input[i], "\r", "", 1)
@@ -62,21 +76,21 @@ func (g Graph) printMapCombinedVertex() {
 
 			if m != 0 {
 				key := fmt.Sprintf("%v-%v", i, j+1)
-				graph[key] = m
+				g.mapCombinedVertex[key] = m
 			}
 		}
 	}
 
-	fmt.Println(graph)
+	fmt.Println(g.mapCombinedVertex)
 	fmt.Println()
 }
 
-func (g Graph) printListEdge() {
-	fmt.Println("printListEdge")
+func (g *Graph) makeListEdge() {
+	fmt.Println("makeListEdge")
 	fmt.Println()
 }
 
-func (g Graph) printAdjacencyMatrix() {
+func (g *Graph) makeAdjacencyMatrix() {
 	if len(g.input) == 0 {
 		fmt.Println("len=0")
 		return
@@ -87,10 +101,11 @@ func (g Graph) printAdjacencyMatrix() {
 		fmt.Println(err.Error())
 		return
 	}
+	g.n = n
 
-	graph := make([][]int, n)
+	g.adjacencyMatrix = make([][]int, n)
 	for i := 0; i < n; i++ {
-		graph[i] = make([]int, n)
+		g.adjacencyMatrix[i] = make([]int, n)
 	}
 
 	for i := 1; i < n; i++ {
@@ -104,19 +119,91 @@ func (g Graph) printAdjacencyMatrix() {
 				return
 			}
 
-			graph[i-1][j] = m
+			g.adjacencyMatrix[i-1][j] = m
 		}
 	}
 
 	for i := 0; i < n; i++ {
-		fmt.Println(graph[i])
+		fmt.Println(g.adjacencyMatrix[i])
 	}
 	fmt.Println()
 }
 
-func (g Graph) printAdjacencyEdge() {
-	fmt.Println("printAdjacencyEdge")
+func (g *Graph) makeAdjacencyEdge() {
+	fmt.Println("makeAdjacencyEdge")
 	fmt.Println()
+}
+
+// ========================================================================================
+
+// DFS ...
+func (g Graph) DFS(s int) {
+	var stack [100]int
+	var top int
+
+	stack[top] = s
+	top++
+
+	for top != 0 {
+		top--
+		vertex := stack[top]
+
+		if g.isVisited[vertex] == false {
+			fmt.Print(vertex+1, " ")
+			g.isVisited[vertex] = true
+
+			for i := g.n - 1; i >= 1; i-- {
+				// cạnh 2 chiều
+				key1 := fmt.Sprintf("%v-%v", vertex+1, i+1)
+				key2 := fmt.Sprintf("%v-%v", i+1, vertex+1)
+				gTmp1 := g.mapCombinedVertex[key1]
+				gTmp2 := g.mapCombinedVertex[key2]
+				// gTmp := graph[vertex][i]
+
+				if g.isVisited[i] == false && (gTmp1 != 0 || gTmp2 != 0) {
+					stack[top] = i
+					top++
+				}
+			}
+		}
+
+	}
+}
+
+// BFS ...
+func (g Graph) BFS(u int) {
+	var queue [100]int
+
+	top := 0
+	bottom := 0
+	for i := 0; i < g.n; i++ {
+		queue[i] = 0
+	}
+
+	queue[bottom] = u
+	g.isVisited[u] = true
+	fmt.Print(u+1, " ")
+
+	for top >= bottom {
+		p := queue[bottom]
+		bottom++
+		for v := 0; v < g.n; v++ {
+			// cạnh 2 chiều
+			key1 := fmt.Sprintf("%v-%v", p+1, v+1)
+			key2 := fmt.Sprintf("%v-%v", v+1, p+1)
+			gTmp1 := g.mapCombinedVertex[key1]
+			gTmp2 := g.mapCombinedVertex[key2]
+			// gTmp := graph[p][v]
+
+			if g.isVisited[v] == false && (gTmp1 != 0 || gTmp2 != 0) {
+				top++
+				queue[top] = v
+				g.isVisited[v] = true
+				fmt.Print(v+1, " ")
+			}
+
+		}
+	}
 }
 
 // ========================================================================================

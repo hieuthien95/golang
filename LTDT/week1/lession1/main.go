@@ -22,13 +22,14 @@ func main() {
 	mapGraph["6-5"] = 1
 	mapGraph["5-4"] = 1
 	mapGraph["1-7"] = 1
-	// mapGraph["2-1"] = 1
-	// mapGraph["3-2"] = 1
-	// mapGraph["7-3"] = 1
-	// mapGraph["6-7"] = 1
-	// mapGraph["5-6"] = 1
-	// mapGraph["4-5"] = 1
-	// mapGraph["7-1"] = 1
+
+	mapGraph["2-1"] = 1
+	mapGraph["3-2"] = 1
+	mapGraph["7-3"] = 1
+	mapGraph["6-7"] = 1
+	mapGraph["5-6"] = 1
+	mapGraph["4-5"] = 1
+	mapGraph["7-1"] = 1
 
 	// graph = make([][]int, n)
 	// graph = [][]int{
@@ -67,11 +68,11 @@ func DFS(s int) {
 		vertex := stack[top]
 
 		if isVisited[vertex] == false {
-			fmt.Print(vertex+1, " ")
+			fmt.Print(vertex, " ")
 			isVisited[vertex] = true
 
 			for i := n - 1; i >= 1; i-- {
-				// cạnh 2 chiều
+				// cạnh vô hướng
 				key1 := fmt.Sprintf("%v-%v", vertex+1, i+1)
 				key2 := fmt.Sprintf("%v-%v", i+1, vertex+1)
 				gTmp1 := mapGraph[key1]
@@ -102,13 +103,13 @@ func BFS(u int) {
 
 	queue[bottom] = u
 	isVisited[u] = true
-	fmt.Print(u+1, " ")
+	fmt.Print(u, " ")
 
 	for top >= bottom {
 		p := queue[bottom]
 		bottom++
 		for v := 0; v < n; v++ {
-			// cạnh 2 chiều
+			// cạnh vô hướng
 			key1 := fmt.Sprintf("%v-%v", p+1, v+1)
 			key2 := fmt.Sprintf("%v-%v", v+1, p+1)
 			gTmp1 := mapGraph[key1]
@@ -119,7 +120,7 @@ func BFS(u int) {
 				top++
 				queue[top] = v
 				isVisited[v] = true
-				fmt.Print(v+1, " ")
+				fmt.Print(v, " ")
 			}
 
 		}

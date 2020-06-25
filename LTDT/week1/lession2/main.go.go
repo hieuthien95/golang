@@ -48,6 +48,7 @@ type Graph struct {
 }
 
 func (g *Graph) makeMapCombinedVertex() {
+	fmt.Println("makeMapCombinedVertex")
 
 	if len(g.input) == 0 {
 		fmt.Println("len=0")
@@ -91,6 +92,8 @@ func (g *Graph) makeListEdge() {
 }
 
 func (g *Graph) makeAdjacencyMatrix() {
+	fmt.Println("makeAdjacencyMatrix")
+
 	if len(g.input) == 0 {
 		fmt.Println("len=0")
 		return
@@ -149,11 +152,11 @@ func (g Graph) DFS(s int) {
 		vertex := stack[top]
 
 		if g.isVisited[vertex] == false {
-			fmt.Print(vertex+1, " ")
+			fmt.Print(vertex, " ")
 			g.isVisited[vertex] = true
 
 			for i := g.n - 1; i >= 1; i-- {
-				// cạnh 2 chiều
+				// cạnh vô hướng
 				key1 := fmt.Sprintf("%v-%v", vertex+1, i+1)
 				key2 := fmt.Sprintf("%v-%v", i+1, vertex+1)
 				gTmp1 := g.mapCombinedVertex[key1]
@@ -182,13 +185,13 @@ func (g Graph) BFS(u int) {
 
 	queue[bottom] = u
 	g.isVisited[u] = true
-	fmt.Print(u+1, " ")
+	fmt.Print(u, " ")
 
 	for top >= bottom {
 		p := queue[bottom]
 		bottom++
 		for v := 0; v < g.n; v++ {
-			// cạnh 2 chiều
+			// cạnh vô hướng
 			key1 := fmt.Sprintf("%v-%v", p+1, v+1)
 			key2 := fmt.Sprintf("%v-%v", v+1, p+1)
 			gTmp1 := g.mapCombinedVertex[key1]
@@ -199,7 +202,7 @@ func (g Graph) BFS(u int) {
 				top++
 				queue[top] = v
 				g.isVisited[v] = true
-				fmt.Print(v+1, " ")
+				fmt.Print(v, " ")
 			}
 
 		}

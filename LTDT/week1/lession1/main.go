@@ -44,7 +44,7 @@ func main() {
 
 	isVisited = make([]bool, n)
 	fmt.Println("Duyet do thi DFS:")
-	DFS(0)
+	DFS(0, 99)
 
 	fmt.Println()
 
@@ -55,8 +55,15 @@ func main() {
 
 // ========================================================================================
 
+type process struct {
+	parent int
+	vertex int
+}
+
 // DFS ...
-func DFS(start int) {
+func DFS(start int, target int) []int {
+	prosAll := []process{}
+
 	var stack [100]int
 	var top int
 
@@ -79,11 +86,36 @@ func DFS(start int) {
 				if isVisited[i] == false && gTmp != 0 {
 					stack[top] = i
 					top++
+
+					prosAll = append(prosAll, process{
+						parent: vertex,
+						vertex: i,
+					})
+
+					if i == target || vertex == target {
+						goto out
+					}
 				}
 			}
 		}
 
 	}
+out:
+
+	var ways []int
+	tmp := target
+	for i := len(prosAll) - 1; i >= 0; i-- {
+		p := prosAll[i]
+
+		if tmp == p.vertex {
+			tmp = p.parent
+			ways = append(ways, tmp)
+		}
+	}
+	fmt.Println()
+	fmt.Println("Way: ", ways)
+
+	return ways
 }
 
 // ========================================================================================

@@ -206,11 +206,11 @@ func (g *graph) makeAdjacencyEdge() {
 // ========================================================================================
 
 // DFS ...
-func (g graph) DFS(s int) {
+func (g graph) DFS(start int) {
 	var stack [100]int
 	var top int
 
-	stack[top] = s
+	stack[top] = start
 	top++
 
 	for top != 0 {
@@ -237,7 +237,7 @@ func (g graph) DFS(s int) {
 }
 
 // BFS ...
-func (g graph) BFS(u int) {
+func (g graph) BFS(start int) {
 	var queue [100]int
 
 	top := 0
@@ -246,9 +246,9 @@ func (g graph) BFS(u int) {
 		queue[i] = 0
 	}
 
-	queue[bottom] = u
-	g.isVisited[u] = true
-	fmt.Print(u, " ")
+	queue[bottom] = start
+	g.isVisited[start] = true
+	fmt.Print(start, " ")
 
 	for top >= bottom {
 		p := queue[bottom]

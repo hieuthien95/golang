@@ -56,11 +56,11 @@ func main() {
 // ========================================================================================
 
 // DFS ...
-func DFS(s int) {
+func DFS(start int) {
 	var stack [100]int
 	var top int
 
-	stack[top] = s
+	stack[top] = start
 	top++
 
 	for top != 0 {

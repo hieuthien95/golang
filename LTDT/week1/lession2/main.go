@@ -63,24 +63,52 @@ func (g *Graph) makeMapCombinedVertex() {
 	g.n = n
 
 	g.mapCombinedVertex = make(map[string]int)
+	// g.adjacencyMatrix = make([][]int, n)
+	// for i := 0; i < n; i++ {
+	// 	g.adjacencyMatrix[i] = make([]int, n)
+	// }
 
-	for i := 1; i < n; i++ {
+	for i := 1; i <= n; i++ {
 		strLine := strings.Replace(g.input[i], "\r", "", 1)
 		strArr := strings.Split(strLine, " ")
 
 		for j, s := range strArr {
-			m, err := strconv.Atoi(s)
+			w, err := strconv.Atoi(s)
 			if err != nil {
 				fmt.Println(err.Error())
 				return
 			}
 
-			if m != 0 {
+			if w != 0 {
 				key := fmt.Sprintf("%v-%v", i-1, j)
-				g.mapCombinedVertex[key] = m
+				g.mapCombinedVertex[key] = w
 			}
+
+			// // fill [][]array
+			// w := g.adjacencyMatrix[i][j]
+			// if w != 0 {
+			// 	key := fmt.Sprintf("%v-%v", i, j)
+			// 	g.mapCombinedVertex[key] = w
+			// }
 		}
 	}
+
+	// // convert [][]array to map
+	// for i := 0; i < n; i++ {
+	// 	for j := 0; j < n; j++ {
+	// 		w := g.adjacencyMatrix[i][j]
+	// 		if w != 0 {
+	// 			key := fmt.Sprintf("%v-%v", i, j)
+	// 			g.mapCombinedVertex[key] = w
+	// 		}
+
+	// 		w = g.adjacencyMatrix[j][i]
+	// 		if w != 0 {
+	// 			key := fmt.Sprintf("%v-%v", j, i)
+	// 			g.mapCombinedVertex[key] = w
+	// 		}
+	// 	}
+	// }
 
 	fmt.Println(g.mapCombinedVertex)
 	fmt.Println()
@@ -111,18 +139,18 @@ func (g *Graph) makeAdjacencyMatrix() {
 		g.adjacencyMatrix[i] = make([]int, n)
 	}
 
-	for i := 1; i < n; i++ {
+	for i := 1; i <= n; i++ {
 		strLine := strings.Replace(g.input[i], "\r", "", 1)
 		strArr := strings.Split(strLine, " ")
 
 		for j, s := range strArr {
-			m, err := strconv.Atoi(s)
+			w, err := strconv.Atoi(s)
 			if err != nil {
 				fmt.Println(err.Error())
 				return
 			}
 
-			g.adjacencyMatrix[i-1][j] = m
+			g.adjacencyMatrix[i-1][j] = w
 		}
 	}
 
@@ -156,14 +184,11 @@ func (g Graph) DFS(s int) {
 			g.isVisited[vertex] = true
 
 			for i := g.n - 1; i >= 0; i-- {
-				// cạnh vô hướng
-				key1 := fmt.Sprintf("%v-%v", vertex, i)
-				key2 := fmt.Sprintf("%v-%v", i, vertex)
-				gTmp1 := g.mapCombinedVertex[key1]
-				gTmp2 := g.mapCombinedVertex[key2]
+				key := fmt.Sprintf("%v-%v", vertex, i)
+				gTmp := g.mapCombinedVertex[key]
 				// gTmp := graph[vertex][i]
 
-				if g.isVisited[i] == false && (gTmp1 != 0 || gTmp2 != 0) {
+				if g.isVisited[i] == false && gTmp != 0 {
 					stack[top] = i
 					top++
 				}
@@ -191,14 +216,11 @@ func (g Graph) BFS(u int) {
 		p := queue[bottom]
 		bottom++
 		for v := 0; v < g.n; v++ {
-			// cạnh vô hướng
-			key1 := fmt.Sprintf("%v-%v", p, v)
-			key2 := fmt.Sprintf("%v-%v", v, p)
-			gTmp1 := g.mapCombinedVertex[key1]
-			gTmp2 := g.mapCombinedVertex[key2]
+			key := fmt.Sprintf("%v-%v", p, v)
+			gTmp := g.mapCombinedVertex[key]
 			// gTmp := graph[p][v]
 
-			if g.isVisited[v] == false && (gTmp1 != 0 || gTmp2 != 0) {
+			if g.isVisited[v] == false && gTmp != 0 {
 				top++
 				queue[top] = v
 				g.isVisited[v] = true

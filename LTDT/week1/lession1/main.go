@@ -72,14 +72,11 @@ func DFS(s int) {
 			isVisited[vertex] = true
 
 			for i := n - 1; i >= 0; i-- {
-				// cạnh vô hướng
-				key1 := fmt.Sprintf("%v-%v", vertex, i)
-				key2 := fmt.Sprintf("%v-%v", i, vertex)
-				gTmp1 := mapGraph[key1]
-				gTmp2 := mapGraph[key2]
+				key := fmt.Sprintf("%v-%v", vertex, i)
+				gTmp := mapGraph[key]
 				// gTmp := graph[vertex][i]
 
-				if isVisited[i] == false && (gTmp1 != 0 || gTmp2 != 0) {
+				if isVisited[i] == false && gTmp != 0 {
 					stack[top] = i
 					top++
 				}
@@ -109,14 +106,11 @@ func BFS(u int) {
 		p := queue[bottom]
 		bottom++
 		for v := 0; v < n; v++ {
-			// cạnh vô hướng
-			key1 := fmt.Sprintf("%v-%v", p, v)
-			key2 := fmt.Sprintf("%v-%v", v, p)
-			gTmp1 := mapGraph[key1]
-			gTmp2 := mapGraph[key2]
+			key := fmt.Sprintf("%v-%v", p, v)
+			gTmp := mapGraph[key]
 			// gTmp := graph[p][v]
 
-			if isVisited[v] == false && (gTmp1 != 0 || gTmp2 != 0) {
+			if isVisited[v] == false && gTmp != 0 {
 				top++
 				queue[top] = v
 				isVisited[v] = true

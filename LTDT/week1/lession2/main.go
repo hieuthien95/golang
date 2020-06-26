@@ -19,12 +19,11 @@ func main() {
 	g.makeAdjacencyMatrix()
 	g.makeAdjacencyEdge()
 
-	fmt.Println()
-
 	g.isVisited = make([]bool, g.n)
 	fmt.Println("Duyet do thi DFS:")
 	g.DFS(0)
 
+	fmt.Println()
 	fmt.Println()
 
 	g.isVisited = make([]bool, g.n)
@@ -40,7 +39,9 @@ type graph struct {
 	mapCombinedVertex map[string]int
 	listEdge          []edge
 	adjacencyMatrix   [][]int
-	adjacencyEdge     []string
+
+	adjacencyEdgeArrayV []int
+	adjacencyEdgeArrayE []int
 
 	n         int
 	isVisited []bool
@@ -49,7 +50,7 @@ type graph struct {
 type edge struct {
 	from int
 	to   int
-	w    int
+	// w    int
 }
 
 func (g *graph) makeMapCombinedVertex() {
@@ -148,7 +149,7 @@ func (g *graph) makeListEdge() {
 			}
 
 			if w != 0 {
-				g.listEdge = append(g.listEdge, edge{i - 1, j, w})
+				g.listEdge = append(g.listEdge, edge{i - 1, j})
 			}
 		}
 	}
@@ -200,6 +201,41 @@ func (g *graph) makeAdjacencyMatrix() {
 
 func (g *graph) makeAdjacencyEdge() {
 	fmt.Println("makeAdjacencyEdge")
+
+	if len(g.input) == 0 {
+		fmt.Println("len=0")
+		return
+	}
+
+	n, err := strconv.Atoi(strings.Replace(g.input[0], "\r", "", 1))
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	g.n = n
+
+	index := 0
+	for i := 1; i <= n; i++ {
+		strLine := strings.Replace(g.input[i], "\r", "", 1)
+		strArr := strings.Split(strLine, " ")
+
+		g.adjacencyEdgeArrayV = append(g.adjacencyEdgeArrayV, index)
+		for j, s := range strArr {
+			w, err := strconv.Atoi(s)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+
+			if w != 0 {
+				g.adjacencyEdgeArrayE = append(g.adjacencyEdgeArrayE, j)
+				index++
+			}
+		}
+	}
+
+	fmt.Println(g.adjacencyEdgeArrayV)
+	fmt.Println(g.adjacencyEdgeArrayE)
 	fmt.Println()
 }
 

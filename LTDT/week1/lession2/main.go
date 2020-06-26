@@ -221,13 +221,13 @@ func (g graph) DFS(start int) {
 			fmt.Print(vertex, " ")
 			g.isVisited[vertex] = true
 
-			for i := g.n - 1; i >= 0; i-- {
-				key := fmt.Sprintf("%v-%v", vertex, i)
+			for v := g.n - 1; v >= 0; v-- {
+				key := fmt.Sprintf("%v-%v", vertex, v)
 				gTmp := g.mapCombinedVertex[key]
-				// gTmp := graph[vertex][i]
+				// gTmp := graph[vertex][v]
 
-				if g.isVisited[i] == false && gTmp != 0 {
-					stack[top] = i
+				if g.isVisited[v] == false && gTmp != 0 {
+					stack[top] = v
 					top++
 				}
 			}
@@ -239,29 +239,27 @@ func (g graph) DFS(start int) {
 // BFS ...
 func (g graph) BFS(start int) {
 	var queue [100]int
-
 	top := 0
 	bottom := 0
-	for i := 0; i < g.n; i++ {
-		queue[i] = 0
-	}
 
 	queue[bottom] = start
 	g.isVisited[start] = true
 	fmt.Print(start, " ")
 
 	for top >= bottom {
-		p := queue[bottom]
+		vertex := queue[bottom]
 		bottom++
+
 		for v := 0; v < g.n; v++ {
-			key := fmt.Sprintf("%v-%v", p, v)
+			key := fmt.Sprintf("%v-%v", vertex, v)
 			gTmp := g.mapCombinedVertex[key]
-			// gTmp := graph[p][v]
+			// gTmp := graph[vertex][v]
 
 			if g.isVisited[v] == false && gTmp != 0 {
 				top++
 				queue[top] = v
 				g.isVisited[v] = true
+
 				fmt.Print(v, " ")
 			}
 

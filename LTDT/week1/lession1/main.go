@@ -50,7 +50,7 @@ func main() {
 
 	isVisited = make([]bool, n)
 	fmt.Println("Duyet do thi BFS:")
-	BFS(0)
+	BFS(0, 99)
 }
 
 // ========================================================================================
@@ -78,29 +78,29 @@ func DFS(start int, target int) []int {
 			fmt.Print(vertex, " ")
 			isVisited[vertex] = true
 
-			for i := n - 1; i >= 0; i-- {
-				key := fmt.Sprintf("%v-%v", vertex, i)
+			for v := n - 1; v >= 0; v-- {
+				key := fmt.Sprintf("%v-%v", vertex, v)
 				gTmp := mapGraph[key]
-				// gTmp := graph[vertex][i]
+				// gTmp := graph[vertex][v]
 
-				if isVisited[i] == false && gTmp != 0 {
-					stack[top] = i
+				if isVisited[v] == false && gTmp != 0 {
+					stack[top] = v
 					top++
 
+					//
 					prosAll = append(prosAll, process{
 						parent: vertex,
-						vertex: i,
+						vertex: v,
 					})
-
-					if i == target || vertex == target {
-						goto out
+					if v == target || vertex == target {
+						goto OUT_LOOP
 					}
 				}
 			}
 		}
 
 	}
-out:
+OUT_LOOP:
 
 	var ways []int
 	tmp := target
@@ -121,34 +121,58 @@ out:
 // ========================================================================================
 
 // BFS ...
-func BFS(u int) {
-	var queue [100]int
+func BFS(start int, target int) []int {
+	prosAll := []process{}
 
+	var queue [100]int
 	top := 0
 	bottom := 0
-	for i := 0; i < n; i++ {
-		queue[i] = 0
-	}
 
-	queue[bottom] = u
-	isVisited[u] = true
-	fmt.Print(u, " ")
+	queue[bottom] = start
+	isVisited[start] = true
+	fmt.Print(start, " ")
 
 	for top >= bottom {
-		p := queue[bottom]
+		vertex := queue[bottom]
 		bottom++
 		for v := 0; v < n; v++ {
-			key := fmt.Sprintf("%v-%v", p, v)
+			key := fmt.Sprintf("%v-%v", vertex, v)
 			gTmp := mapGraph[key]
-			// gTmp := graph[p][v]
+			// gTmp := graph[vertex][v]
 
 			if isVisited[v] == false && gTmp != 0 {
 				top++
 				queue[top] = v
 				isVisited[v] = true
+
 				fmt.Print(v, " ")
+
+				//
+				prosAll = append(prosAll, process{
+					parent: vertex,
+					vertex: v,
+				})
+				if v == target || vertex == target {
+					goto OUT_LOOP
+				}
 			}
 
 		}
 	}
+OUT_LOOP:
+
+	var ways []int
+	tmp := target
+	for i := len(prosAll) - 1; i >= 0; i-- {
+		p := prosAll[i]
+
+		if tmp == p.vertex {
+			tmp = p.parent
+			ways = append(ways, tmp)
+		}
+	}
+	fmt.Println()
+	fmt.Println("Way: ", ways)
+
+	return ways
 }

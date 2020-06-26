@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	g := Graph{}
+	g := graph{}
 	g.readFile("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week1/lession2/input.txt")
 
 	g.makeMapCombinedVertex()
@@ -34,12 +34,11 @@ func main() {
 
 // ========================================================================================
 
-// Graph ...
-type Graph struct {
+type graph struct {
 	input []string
 
 	mapCombinedVertex map[string]int
-	listEdge          []string
+	listEdge          []edge
 	adjacencyMatrix   [][]int
 	adjacencyEdge     []string
 
@@ -47,7 +46,13 @@ type Graph struct {
 	isVisited []bool
 }
 
-func (g *Graph) makeMapCombinedVertex() {
+type edge struct {
+	from int
+	to   int
+	w    int
+}
+
+func (g *graph) makeMapCombinedVertex() {
 	fmt.Println("makeMapCombinedVertex")
 
 	if len(g.input) == 0 {
@@ -114,12 +119,45 @@ func (g *Graph) makeMapCombinedVertex() {
 	fmt.Println()
 }
 
-func (g *Graph) makeListEdge() {
+func (g *graph) makeListEdge() {
 	fmt.Println("makeListEdge")
+
+	if len(g.input) == 0 {
+		fmt.Println("len=0")
+		return
+	}
+
+	n, err := strconv.Atoi(strings.Replace(g.input[0], "\r", "", 1))
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	g.n = n
+
+	g.listEdge = []edge{}
+
+	for i := 1; i <= n; i++ {
+		strLine := strings.Replace(g.input[i], "\r", "", 1)
+		strArr := strings.Split(strLine, " ")
+
+		for j, s := range strArr {
+			w, err := strconv.Atoi(s)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+
+			if w != 0 {
+				g.listEdge = append(g.listEdge, edge{i - 1, j, w})
+			}
+		}
+	}
+
+	fmt.Println(g.listEdge)
 	fmt.Println()
 }
 
-func (g *Graph) makeAdjacencyMatrix() {
+func (g *graph) makeAdjacencyMatrix() {
 	fmt.Println("makeAdjacencyMatrix")
 
 	if len(g.input) == 0 {
@@ -160,7 +198,7 @@ func (g *Graph) makeAdjacencyMatrix() {
 	fmt.Println()
 }
 
-func (g *Graph) makeAdjacencyEdge() {
+func (g *graph) makeAdjacencyEdge() {
 	fmt.Println("makeAdjacencyEdge")
 	fmt.Println()
 }
@@ -168,7 +206,7 @@ func (g *Graph) makeAdjacencyEdge() {
 // ========================================================================================
 
 // DFS ...
-func (g Graph) DFS(s int) {
+func (g graph) DFS(s int) {
 	var stack [100]int
 	var top int
 
@@ -199,7 +237,7 @@ func (g Graph) DFS(s int) {
 }
 
 // BFS ...
-func (g Graph) BFS(u int) {
+func (g graph) BFS(u int) {
 	var queue [100]int
 
 	top := 0
@@ -233,7 +271,7 @@ func (g Graph) BFS(u int) {
 
 // ========================================================================================
 
-func (g *Graph) readFile(fileName string) ([]string, error) {
+func (g *graph) readFile(fileName string) ([]string, error) {
 	file, err := os.Open(fileName)
 	if err != nil {
 		log.Fatal(err)
@@ -249,7 +287,7 @@ func (g *Graph) readFile(fileName string) ([]string, error) {
 	return lines, nil
 }
 
-func (g *Graph) readLineFile(path string) ([]string, error) {
+func (g *graph) readLineFile(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)

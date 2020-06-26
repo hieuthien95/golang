@@ -12,7 +12,7 @@ import (
 
 func main() {
 	g := graph{}
-	g.readFile("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week1/lession2/input.txt")
+	g.readFile("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week1/graph-bfs-dfs/input.txt")
 
 	g.makeMapCombinedVertex()
 	g.makeListEdge()

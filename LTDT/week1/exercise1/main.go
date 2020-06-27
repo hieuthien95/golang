@@ -22,17 +22,17 @@ var target int
 
 func main() {
 	lines, _ := readLineFile("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week1/exercise1/input.txt")
-	makeMapCombinedVertex(lines)
+	mapGraph = makeMapCombinedVertex(lines)
 
 	isVisited = make([]bool, numberVertex)
 	fmt.Println("Duyet do thi DFS:")
-	DFS(start-1, target-1)
+	DFS(start, target)
 
 	fmt.Println()
 
 	isVisited = make([]bool, numberVertex)
 	fmt.Println("Duyet do thi BFS:")
-	BFS(start-1, target-1)
+	BFS(start, target)
 }
 
 // ========================================================================================
@@ -44,6 +44,10 @@ type process struct {
 
 // DFS ...
 func DFS(start int, target int) []int {
+	// begin = 1 => 0
+	start--
+	target--
+
 	prosAll := []process{}
 
 	var stack [100]int
@@ -84,7 +88,7 @@ func DFS(start int, target int) []int {
 	}
 	// OUT_LOOP:
 
-	ways := []int{viewV(target)}
+	ways := []int{}
 	tmp := target
 	for i := len(prosAll) - 1; i >= 0; i-- {
 		p := prosAll[i]
@@ -104,6 +108,10 @@ func DFS(start int, target int) []int {
 
 // BFS ...
 func BFS(start int, target int) []int {
+	// begin = 1 => 0
+	start--
+	target--
+
 	prosAll := []process{}
 
 	var queue [100]int
@@ -143,7 +151,7 @@ func BFS(start int, target int) []int {
 	}
 	// OUT_LOOP:
 
-	ways := []int{viewV(target)}
+	ways := []int{}
 	tmp := target
 	for i := len(prosAll) - 1; i >= 0; i-- {
 		p := prosAll[i]
@@ -179,12 +187,12 @@ func readLineFile(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
-func makeMapCombinedVertex(lines []string) {
-	mapGraph = make(map[string]int)
+func makeMapCombinedVertex(lines []string) map[string]int {
+	graph := make(map[string]int)
 
 	if len(lines) == 0 {
 		fmt.Println("len=0")
-		return
+		return nil
 	}
 
 	numberVertex, numberEdge = cutNumber(lines[0])
@@ -193,11 +201,10 @@ func makeMapCombinedVertex(lines []string) {
 	for i := 1; i < len(lines)-1; i++ {
 		n1, n2 := cutNumber(lines[i])
 		key := fmt.Sprintf("%v-%v", n1-1, n2-1)
-		mapGraph[key] = 1
+		graph[key] = 1
 	}
 
-	fmt.Println(mapGraph)
-	fmt.Println()
+	return graph
 }
 
 func cutNumber(line string) (int, int) {

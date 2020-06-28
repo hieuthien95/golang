@@ -169,6 +169,19 @@ func readLineFile(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
+func write(ways []int) {
+	f, _ := os.Create("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week1/exercise1/output.txt")
+	defer f.Close()
+	w := bufio.NewWriter(f)
+
+	for i := len(ways) - 1; i >= 0; i-- {
+		w.WriteString(fmt.Sprint(ways[i]) + " ")
+	}
+	w.WriteString("\n")
+
+	w.Flush()
+}
+
 func makeMapCombinedVertex(lines []string) map[string]int {
 	graph := make(map[string]int)
 
@@ -204,21 +217,28 @@ func viewV(i int) int {
 }
 
 func printWays(prosAll []process, target int) {
-	ways := []int{}
+	// begin = 1 => 0
+	target--
+
+	ways := []int{viewV(target)}
+
 	tmp := target
 	for i := len(prosAll) - 1; i >= 0; i-- {
 		p := prosAll[i]
 
 		if tmp == p.vertex {
 			tmp = p.parent
-			ways = append(ways, tmp)
+			ways = append(ways, viewV(tmp))
 		}
 	}
-	fmt.Println()
 
-	if len(ways) == 0 {
-		fmt.Println(0)
-		return
+	// ------------------------------------
+	fmt.Println()
+	if len(ways) == 1 {
+		ways = []int{0}
 	}
 	fmt.Println("Way: ", ways)
+
+	// ------------------------------------
+	write(ways)
 }

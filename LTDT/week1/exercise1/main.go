@@ -24,15 +24,23 @@ func main() {
 	lines, _ := readLineFile("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week1/exercise1/input.txt")
 	mapGraph = makeMapCombinedVertex(lines)
 
+	// ------------------------------------
 	isVisited = make([]bool, numberVertex)
 	fmt.Println("Duyet do thi DFS:")
-	DFS(start, target)
+	printWays(
+		DFS(start, target),
+		target,
+	)
 
 	fmt.Println()
 
+	// ------------------------------------
 	isVisited = make([]bool, numberVertex)
 	fmt.Println("Duyet do thi BFS:")
-	BFS(start, target)
+	printWays(
+		BFS(start, target),
+		target,
+	)
 }
 
 // ========================================================================================
@@ -43,7 +51,7 @@ type process struct {
 }
 
 // DFS ...
-func DFS(start int, target int) []int {
+func DFS(start int, target int) []process {
 	// begin = 1 => 0
 	start--
 	target--
@@ -88,26 +96,13 @@ func DFS(start int, target int) []int {
 	}
 	// OUT_LOOP:
 
-	ways := []int{}
-	tmp := target
-	for i := len(prosAll) - 1; i >= 0; i-- {
-		p := prosAll[i]
-
-		if tmp == p.vertex {
-			tmp = p.parent
-			ways = append(ways, viewV(tmp))
-		}
-	}
-	fmt.Println()
-	fmt.Println("Way: ", ways)
-
-	return ways
+	return prosAll
 }
 
 // ========================================================================================
 
 // BFS ...
-func BFS(start int, target int) []int {
+func BFS(start int, target int) []process {
 	// begin = 1 => 0
 	start--
 	target--
@@ -151,20 +146,7 @@ func BFS(start int, target int) []int {
 	}
 	// OUT_LOOP:
 
-	ways := []int{}
-	tmp := target
-	for i := len(prosAll) - 1; i >= 0; i-- {
-		p := prosAll[i]
-
-		if tmp == p.vertex {
-			tmp = p.parent
-			ways = append(ways, viewV(tmp))
-		}
-	}
-	fmt.Println()
-	fmt.Println("Way: ", ways)
-
-	return ways
+	return prosAll
 }
 
 // ========================================================================================
@@ -219,4 +201,24 @@ func cutNumber(line string) (int, int) {
 
 func viewV(i int) int {
 	return i + 1
+}
+
+func printWays(prosAll []process, target int) {
+	ways := []int{}
+	tmp := target
+	for i := len(prosAll) - 1; i >= 0; i-- {
+		p := prosAll[i]
+
+		if tmp == p.vertex {
+			tmp = p.parent
+			ways = append(ways, tmp)
+		}
+	}
+	fmt.Println()
+
+	if len(ways) == 0 {
+		fmt.Println(0)
+		return
+	}
+	fmt.Println("Way: ", ways)
 }

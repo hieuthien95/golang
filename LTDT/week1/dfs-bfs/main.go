@@ -50,6 +50,7 @@ func main() {
 	fmt.Println("Duyet do thi DFS:")
 	printWays(
 		DFS(start, target),
+		start,
 		target,
 	)
 
@@ -60,6 +61,7 @@ func main() {
 	fmt.Println("Duyet do thi BFS:")
 	printWays(
 		BFS(start, target),
+		start,
 		target,
 	)
 }
@@ -160,7 +162,7 @@ func BFS(start int, target int) []process {
 	return prosAll
 }
 
-func printWays(prosAll []process, target int) {
+func printWays(prosAll []process, start int, target int) {
 	ways := []int{}
 	tmp := target
 	for i := len(prosAll) - 1; i >= 0; i-- {

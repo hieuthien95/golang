@@ -43,45 +43,25 @@ func main() {
 	// }
 
 	start := 0
-	target := 99
+	target := 3
 
 	// ------------------------------------
 	isVisited = make([]bool, n)
 	fmt.Println("Duyet do thi DFS:")
-	prosAll := DFS(start, target)
-
-	ways := []int{}
-	tmp := target
-	for i := len(prosAll) - 1; i >= 0; i-- {
-		p := prosAll[i]
-
-		if tmp == p.vertex {
-			tmp = p.parent
-			ways = append(ways, tmp)
-		}
-	}
-	fmt.Println()
-	fmt.Println("Way: ", ways)
+	printWays(
+		DFS(start, target),
+		target,
+	)
 
 	fmt.Println()
 
 	// ------------------------------------
 	isVisited = make([]bool, n)
 	fmt.Println("Duyet do thi BFS:")
-	prosAll = BFS(start, target)
-
-	ways = []int{}
-	tmp = target
-	for i := len(prosAll) - 1; i >= 0; i-- {
-		p := prosAll[i]
-
-		if tmp == p.vertex {
-			tmp = p.parent
-			ways = append(ways, tmp)
-		}
-	}
-	fmt.Println()
-	fmt.Println("Way: ", ways)
+	printWays(
+		BFS(start, target),
+		target,
+	)
 }
 
 // ========================================================================================
@@ -178,4 +158,19 @@ func BFS(start int, target int) []process {
 	}
 
 	return prosAll
+}
+
+func printWays(prosAll []process, target int) {
+	ways := []int{}
+	tmp := target
+	for i := len(prosAll) - 1; i >= 0; i-- {
+		p := prosAll[i]
+
+		if tmp == p.vertex {
+			tmp = p.parent
+			ways = append(ways, tmp)
+		}
+	}
+	fmt.Println()
+	fmt.Println("Way: ", ways)
 }

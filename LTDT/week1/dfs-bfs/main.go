@@ -166,7 +166,7 @@ func printWays(prosAll []process, target int) {
 	for i := len(prosAll) - 1; i >= 0; i-- {
 		p := prosAll[i]
 
-		if tmp == p.vertex {
+		if tmp == p.vertex && p.vertex != 0 {
 			tmp = p.parent
 			ways = append(ways, tmp)
 		}

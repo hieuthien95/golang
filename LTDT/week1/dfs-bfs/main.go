@@ -42,15 +42,46 @@ func main() {
 	// 	{1, 0, 1, 0, 0, 1, 0},
 	// }
 
+	start := 0
+	target := 99
+
+	// ------------------------------------
 	isVisited = make([]bool, n)
 	fmt.Println("Duyet do thi DFS:")
-	DFS(0, 99)
+	prosAll := DFS(start, target)
+
+	ways := []int{}
+	tmp := target
+	for i := len(prosAll) - 1; i >= 0; i-- {
+		p := prosAll[i]
+
+		if tmp == p.vertex {
+			tmp = p.parent
+			ways = append(ways, tmp)
+		}
+	}
+	fmt.Println()
+	fmt.Println("Way: ", ways)
 
 	fmt.Println()
 
+	// ------------------------------------
 	isVisited = make([]bool, n)
 	fmt.Println("Duyet do thi BFS:")
-	BFS(0, 99)
+	prosAll = BFS(start, target)
+
+	ways = []int{}
+	tmp = target
+	for i := len(prosAll) - 1; i >= 0; i-- {
+		p := prosAll[i]
+
+		if tmp == p.vertex {
+			tmp = p.parent
+			ways = append(ways, tmp)
+		}
+	}
+	fmt.Println()
+	fmt.Println("Way: ", ways)
 }
 
 // ========================================================================================
@@ -61,7 +92,7 @@ type process struct {
 }
 
 // DFS ...
-func DFS(start int, target int) []int {
+func DFS(start int, target int) []process {
 	prosAll := []process{}
 
 	var stack [100]int
@@ -93,35 +124,21 @@ func DFS(start int, target int) []int {
 						vertex: v,
 					})
 					if v == target || vertex == target {
-						goto OUT_LOOP
+						return prosAll
 					}
 				}
 			}
 		}
 
 	}
-OUT_LOOP:
 
-	var ways []int
-	tmp := target
-	for i := len(prosAll) - 1; i >= 0; i-- {
-		p := prosAll[i]
-
-		if tmp == p.vertex {
-			tmp = p.parent
-			ways = append(ways, tmp)
-		}
-	}
-	fmt.Println()
-	fmt.Println("Way: ", ways)
-
-	return ways
+	return prosAll
 }
 
 // ========================================================================================
 
 // BFS ...
-func BFS(start int, target int) []int {
+func BFS(start int, target int) []process {
 	prosAll := []process{}
 
 	var queue [100]int
@@ -153,26 +170,12 @@ func BFS(start int, target int) []int {
 					vertex: v,
 				})
 				if v == target || vertex == target {
-					goto OUT_LOOP
+					return prosAll
 				}
 			}
 
 		}
 	}
-OUT_LOOP:
 
-	var ways []int
-	tmp := target
-	for i := len(prosAll) - 1; i >= 0; i-- {
-		p := prosAll[i]
-
-		if tmp == p.vertex {
-			tmp = p.parent
-			ways = append(ways, tmp)
-		}
-	}
-	fmt.Println()
-	fmt.Println("Way: ", ways)
-
-	return ways
+	return prosAll
 }

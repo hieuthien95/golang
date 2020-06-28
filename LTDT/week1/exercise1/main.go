@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var mapGraph map[string]int
@@ -25,22 +26,14 @@ func main() {
 	mapGraph = makeMapCombinedVertex(lines)
 
 	// ------------------------------------
-	isVisited = make([]bool, numberVertex)
 	fmt.Println("Duyet do thi DFS:")
-	printWays(
-		DFS(start, target),
-		target,
-	)
+	DFS(start, target)
 
 	fmt.Println()
 
 	// ------------------------------------
-	isVisited = make([]bool, numberVertex)
 	fmt.Println("Duyet do thi BFS:")
-	printWays(
-		BFS(start, target),
-		target,
-	)
+	BFS(start, target)
 }
 
 // ========================================================================================
@@ -56,6 +49,7 @@ func DFS(start int, target int) []process {
 	start--
 	target--
 
+	isVisited = make([]bool, numberVertex)
 	prosAll := []process{}
 
 	var stack [100]int
@@ -96,6 +90,7 @@ func DFS(start int, target int) []process {
 	}
 	// OUT_LOOP:
 
+	printWays(prosAll, start+1, target+1, "DFS")
 	return prosAll
 }
 
@@ -107,6 +102,7 @@ func BFS(start int, target int) []process {
 	start--
 	target--
 
+	isVisited = make([]bool, numberVertex)
 	prosAll := []process{}
 
 	var queue [100]int
@@ -146,6 +142,7 @@ func BFS(start int, target int) []process {
 	}
 	// OUT_LOOP:
 
+	printWays(prosAll, start+1, target+1, "BFS")
 	return prosAll
 }
 
@@ -169,15 +166,47 @@ func readLineFile(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
-func write(ways []int) {
-	f, _ := os.Create("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week1/exercise1/output.txt")
+func write(mapOutput map[int][]int, ftype string) {
+	f, err := os.Create("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week1/exercise1/output.txt")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	defer f.Close()
 	w := bufio.NewWriter(f)
 
-	for i := len(ways) - 1; i >= 0; i-- {
-		w.WriteString(fmt.Sprint(ways[i]) + " ")
+	if len(mapOutput) == 0 {
+		w.WriteString(fmt.Sprint(0))
+		w.Flush()
+		return
 	}
-	w.WriteString("\n")
+
+	// DFS min
+	if ftype == "DFS" {
+		minWays := []int{}
+		for _, ways := range mapOutput {
+			minWays = ways
+			break
+		}
+		for _, ways := range mapOutput {
+			if len(minWays) >= len(ways) {
+				minWays = ways
+			}
+		}
+
+		for i := len(minWays) - 1; i >= 0; i-- {
+			w.WriteString(fmt.Sprint(minWays[i]) + " ")
+		}
+		w.WriteString("\n")
+	}
+
+	// DFS / BFS
+	for _, ways := range mapOutput {
+		for i := len(ways) - 1; i >= 0; i-- {
+			w.WriteString(fmt.Sprint(ways[i]) + " ")
+		}
+		w.WriteString("\n")
+	}
 
 	w.Flush()
 }
@@ -216,29 +245,44 @@ func viewV(i int) int {
 	return i + 1
 }
 
-func printWays(prosAll []process, target int) {
+func printWays(prosAll []process, start int, target int, ftype string) {
 	// begin = 1 => 0
+	start--
 	target--
 
-	ways := []int{viewV(target)}
+	mapOutput := make(map[int][]int)
 
-	tmp := target
-	for i := len(prosAll) - 1; i >= 0; i-- {
-		p := prosAll[i]
+	prosCurrent := []process{}
+	for _, p := range prosAll {
+		prosCurrent = append(prosCurrent, p)
 
-		if tmp == p.vertex {
-			tmp = p.parent
-			ways = append(ways, viewV(tmp))
+		if p.vertex == target {
+			// add target
+			ways := []int{viewV(target)}
+
+			tmp := target
+			for i := len(prosCurrent) - 1; i >= 0; i-- {
+				pp := prosCurrent[i]
+
+				if tmp == pp.vertex && pp.parent != 0 {
+					tmp = pp.parent
+					ways = append(ways, viewV(tmp))
+				}
+			}
+
+			// add start
+			ways = append(ways, viewV(start))
+			fmt.Println()
+			fmt.Print(ways)
+
+			time.Sleep(time.Nanosecond)
+			mapOutput[time.Now().Nanosecond()] = ways
 		}
 	}
 
-	// ------------------------------------
 	fmt.Println()
-	if len(ways) == 1 {
-		ways = []int{0}
-	}
-	fmt.Println("Way: ", ways)
+	fmt.Println(mapOutput)
 
-	// ------------------------------------
-	write(ways)
+	// write
+	write(mapOutput, ftype)
 }

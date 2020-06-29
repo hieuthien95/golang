@@ -16,7 +16,7 @@ func main() {
 		fmt.Println("len=0")
 		return
 	}
-	g.n, _ = cutNumber(g.input[0])
+	g.n, g.m = cutNumber(g.input[0])
 
 	g.makeMapCombinedVertex()
 	g.makeListEdge()
@@ -39,6 +39,7 @@ type graph struct {
 	adjacencyEdgeArrayE []int
 
 	n int
+	m int
 }
 
 type edge struct {
@@ -51,7 +52,8 @@ func (g *graph) makeMapCombinedVertex() {
 	fmt.Println("makeMapCombinedVertex")
 
 	g.mapCombinedVertex = make(map[string]int)
-	for i := 1; i < len(g.input)-1; i++ {
+	// len(g.input)-1
+	for i := 1; i < g.m+1; i++ {
 		n1, n2 := cutNumber(g.input[i])
 		key := fmt.Sprintf("%v-%v", n1, n2)
 		g.mapCombinedVertex[key] = 1
@@ -66,7 +68,8 @@ func (g *graph) makeListEdge() {
 	fmt.Println("makeListEdge")
 
 	g.listEdge = []edge{}
-	for i := 1; i < len(g.input)-1; i++ {
+	// len(g.input)-1
+	for i := 1; i < g.m+1; i++ {
 		n1, n2 := cutNumber(g.input[i])
 		g.listEdge = append(g.listEdge, edge{n1, n2})
 	}
@@ -84,7 +87,8 @@ func (g *graph) makeAdjacencyMatrix() {
 		g.adjacencyMatrix[i] = make([]int, g.n)
 	}
 
-	for i := 1; i < len(g.input)-1; i++ {
+	// len(g.input)-1
+	for i := 1; i < g.m+1; i++ {
 		n1, n2 := cutNumber(g.input[i])
 		g.adjacencyMatrix[n1-1][n2-1] = 1
 	}
@@ -105,7 +109,8 @@ func (g *graph) makeAdjacencyEdge() {
 
 		for j := 1; j <= g.n; j++ {
 
-			for l := 1; l < len(g.input)-1; l++ {
+			// len(g.input)-1
+			for l := 1; l < g.m+1; l++ {
 				n1, n2 := cutNumber(g.input[l])
 				if n1 == i && n2 == j {
 					g.adjacencyEdgeArrayE = append(g.adjacencyEdgeArrayE, j)

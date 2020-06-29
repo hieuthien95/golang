@@ -222,7 +222,8 @@ func makeMapCombinedVertex(lines []string) map[string]int {
 	numberVertex, numberEdge = cutNumber(lines[0])
 	start, target = cutNumber(lines[len(lines)-1])
 
-	for i := 1; i < len(lines)-1; i++ {
+	// len(lines)-1
+	for i := 1; i < numberEdge+1; i++ {
 		n1, n2 := cutNumber(lines[i])
 		key := fmt.Sprintf("%v-%v", n1-1, n2-1)
 		graph[key] = 1

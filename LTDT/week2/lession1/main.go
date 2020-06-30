@@ -35,9 +35,10 @@ func main() {
 	g.start, g.end, _, _ = cutNumber(g.input[len(g.input)-1])
 	g.makeMapCombinedVertex()
 
-	str := find2ways(g)
-	write(str)
+	find2ways(g)
 }
+
+// ==================================================================================================
 
 func find2ways(g graph) string {
 
@@ -55,43 +56,55 @@ func find2ways(g graph) string {
 	}
 
 	str := ""
-	weight := 9999
+	weight := 9999999
 	for _, arrS := range waysStart {
-		str += fmt.Sprint(g.start) + " "
+		strS := fmt.Sprint(g.start) + " "
 		for i := len(arrS) - 1; i >= 0; i-- {
 			s := arrS[i]
-			str += fmt.Sprint(s) + " "
+			strS += fmt.Sprint(s) + " "
 		}
 
 		for _, arrE := range waysEnd {
+			strE := ""
 			for i := len(arrE) - 2; i >= 0; i-- {
-				s := arrE[i]
-				str += fmt.Sprint(s) + " "
+				e := arrE[i]
+				strE += fmt.Sprint(e) + " "
 			}
 
-			w := 0
-			arrPoint := strings.Split(strings.Trim(strings.Split(str, "\n")[0], " "), " ")
-			for i, s := range arrPoint {
-				if i > 0 {
-					key := arrPoint[i-1] + "-" + s
-					w += g.mapCombinedVertex[key]
-				}
-			}
+			// new line
+			str1Line := strS + strE
+			str += str1Line + "\n"
 
+			// point
+			w := g.calWeight(str1Line)
 			if weight > w {
 				weight = w
 			}
-
-			str += "\n"
 		}
 
 	}
 
 	str = fmt.Sprint(len(waysStart)*len(waysEnd)) + " " + fmt.Sprint(weight) + "\n" + str
+	write(str)
 
 	fmt.Println(str)
 	return str
 }
+
+func (g *graph) calWeight(str string) int {
+	weight := 0
+	arrPoint := strings.Split(strings.Trim(str, " "), " ")
+	for i, s := range arrPoint {
+		if i > 0 {
+			key := arrPoint[i-1] + "-" + s
+			weight += g.mapCombinedVertex[key]
+		}
+	}
+
+	return weight
+}
+
+// ==================================================================================================
 
 func printWays(prosAll []process, start int, target int) map[int][]int {
 	// begin = 1 => 0
@@ -132,6 +145,8 @@ func printWays(prosAll []process, start int, target int) map[int][]int {
 	// fmt.Println(mapOutput)
 	return mapOutput
 }
+
+// ==================================================================================================
 
 type process struct {
 	parent int
@@ -213,22 +228,7 @@ func (g *graph) makeMapCombinedVertex() {
 	// fmt.Println()
 }
 
-func (g *graph) readLineFile(path string) ([]string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		g.input = append(g.input, scanner.Text())
-	}
-
-	return g.input, scanner.Err()
-}
+// ==================================================================================================
 
 func cutNumber(line string) (int, int, int, int) {
 	line = strings.Replace(line, "\r", "", 1)
@@ -248,6 +248,25 @@ func cutNumber(line string) (int, int, int, int) {
 
 func viewV(i int) int {
 	return i + 1
+}
+
+// ==================================================================================================
+
+func (g *graph) readLineFile(path string) ([]string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		g.input = append(g.input, scanner.Text())
+	}
+
+	return g.input, scanner.Err()
 }
 
 func write(str string) {

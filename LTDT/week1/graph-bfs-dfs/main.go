@@ -13,6 +13,16 @@ import (
 func main() {
 	g := graph{}
 	g.readFile("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week1/graph-bfs-dfs/input.txt")
+	if len(g.input) == 0 {
+		fmt.Println("len=0")
+		return
+	}
+	n, err := strconv.Atoi(strings.Replace(g.input[0], "\r", "", 1))
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	g.n = n
 
 	g.makeMapCombinedVertex()
 	g.makeListEdge()
@@ -56,25 +66,13 @@ type edge struct {
 func (g *graph) makeMapCombinedVertex() {
 	fmt.Println("makeMapCombinedVertex")
 
-	if len(g.input) == 0 {
-		fmt.Println("len=0")
-		return
-	}
-
-	n, err := strconv.Atoi(strings.Replace(g.input[0], "\r", "", 1))
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	g.n = n
-
 	g.mapCombinedVertex = make(map[string]int)
 	// g.adjacencyMatrix = make([][]int, n)
 	// for i := 0; i < n; i++ {
 	// 	g.adjacencyMatrix[i] = make([]int, n)
 	// }
 
-	for i := 1; i <= n; i++ {
+	for i := 1; i <= g.n; i++ {
 		strLine := strings.Replace(g.input[i], "\r", "", 1)
 		strArr := strings.Split(strLine, " ")
 
@@ -123,21 +121,9 @@ func (g *graph) makeMapCombinedVertex() {
 func (g *graph) makeListEdge() {
 	fmt.Println("makeListEdge")
 
-	if len(g.input) == 0 {
-		fmt.Println("len=0")
-		return
-	}
-
-	n, err := strconv.Atoi(strings.Replace(g.input[0], "\r", "", 1))
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	g.n = n
-
 	g.listEdge = []edge{}
 
-	for i := 1; i <= n; i++ {
+	for i := 1; i <= g.n; i++ {
 		strLine := strings.Replace(g.input[i], "\r", "", 1)
 		strArr := strings.Split(strLine, " ")
 
@@ -161,24 +147,12 @@ func (g *graph) makeListEdge() {
 func (g *graph) makeAdjacencyMatrix() {
 	fmt.Println("makeAdjacencyMatrix")
 
-	if len(g.input) == 0 {
-		fmt.Println("len=0")
-		return
+	g.adjacencyMatrix = make([][]int, g.n)
+	for i := 0; i < g.n; i++ {
+		g.adjacencyMatrix[i] = make([]int, g.n)
 	}
 
-	n, err := strconv.Atoi(strings.Replace(g.input[0], "\r", "", 1))
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	g.n = n
-
-	g.adjacencyMatrix = make([][]int, n)
-	for i := 0; i < n; i++ {
-		g.adjacencyMatrix[i] = make([]int, n)
-	}
-
-	for i := 1; i <= n; i++ {
+	for i := 1; i <= g.n; i++ {
 		strLine := strings.Replace(g.input[i], "\r", "", 1)
 		strArr := strings.Split(strLine, " ")
 
@@ -193,7 +167,7 @@ func (g *graph) makeAdjacencyMatrix() {
 		}
 	}
 
-	for i := 0; i < n; i++ {
+	for i := 0; i < g.n; i++ {
 		fmt.Println(g.adjacencyMatrix[i])
 	}
 	fmt.Println()
@@ -202,20 +176,8 @@ func (g *graph) makeAdjacencyMatrix() {
 func (g *graph) makeAdjacencyEdge() {
 	fmt.Println("makeAdjacencyEdge")
 
-	if len(g.input) == 0 {
-		fmt.Println("len=0")
-		return
-	}
-
-	n, err := strconv.Atoi(strings.Replace(g.input[0], "\r", "", 1))
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	g.n = n
-
 	index := 0
-	for i := 1; i <= n; i++ {
+	for i := 1; i <= g.n; i++ {
 		strLine := strings.Replace(g.input[i], "\r", "", 1)
 		strArr := strings.Split(strLine, " ")
 

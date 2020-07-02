@@ -20,8 +20,11 @@ type graph struct {
 
 	start int
 	end   int
+}
 
-	isVisited []bool
+type stackQueueItem struct {
+	vertex    int
+	isVisited []*int
 }
 
 func main() {
@@ -35,170 +38,68 @@ func main() {
 	g.start, g.end, _, _ = cutNumber(g.input[len(g.input)-1])
 	g.makeMapCombinedVertex()
 
-	find2ways(g)
+	g.DFS(g.start, g.end)
+	g.DFS(g.end, g.start)
 }
 
 // ==================================================================================================
 
-func find2ways(g graph) string {
-
-	processStart := g.DFS(g.start, g.end)
-	waysStart := printWays(processStart, g.start, g.end)
-
-	processEnd := g.DFS(g.end, g.start)
-	waysEnd := printWays(processEnd, g.end, g.start)
-
-	fmt.Println()
-	fmt.Println(waysStart, " - ", waysEnd)
-
-	if len(waysStart) == 0 || len(waysEnd) == 0 {
-		return "0"
-	}
-
-	str := ""
-	weight := 9999999
-	for _, arrS := range waysStart {
-		strS := fmt.Sprint(g.start) + " "
-		for i := len(arrS) - 1; i >= 0; i-- {
-			s := arrS[i]
-			strS += fmt.Sprint(s) + " "
-		}
-
-		for _, arrE := range waysEnd {
-			strE := ""
-			for i := len(arrE) - 2; i >= 0; i-- {
-				e := arrE[i]
-				strE += fmt.Sprint(e) + " "
-			}
-
-			// new line
-			str1Line := strS + strE
-			str += str1Line + "\n"
-
-			// point
-			w := g.calWeight(str1Line)
-			if weight > w {
-				weight = w
-			}
-		}
-
-	}
-
-	str = fmt.Sprint(len(waysStart)*len(waysEnd)) + " " + fmt.Sprint(weight) + "\n" + str
-	write(str)
-
-	fmt.Println(str)
-	return str
-}
-
-func (g *graph) calWeight(str string) int {
-	weight := 0
-	arrPoint := strings.Split(strings.Trim(str, " "), " ")
-	for i, s := range arrPoint {
-		if i > 0 {
-			key := arrPoint[i-1] + "-" + s
-			weight += g.mapCombinedVertex[key]
-		}
-	}
-
-	return weight
-}
-
 // ==================================================================================================
-
-func printWays(prosAll []process, start int, target int) map[int][]int {
-	// begin = 1 => 0
-	start--
-	target--
-
-	mapOutput := make(map[int][]int)
-
-	prosCurrent := []process{}
-	for _, p := range prosAll {
-		prosCurrent = append(prosCurrent, p)
-
-		if p.vertex == target {
-			// add target
-			ways := []int{viewV(target)}
-
-			tmp := target
-			for i := len(prosCurrent) - 1; i >= 0; i-- {
-				pp := prosCurrent[i]
-
-				if tmp == pp.vertex && pp.parent != 0 {
-					tmp = pp.parent
-					ways = append(ways, viewV(tmp))
-				}
-			}
-
-			// add start
-			// ways = append(ways, viewV(start))
-			// fmt.Println()
-			// fmt.Print(ways)
-
-			time.Sleep(time.Nanosecond)
-			mapOutput[time.Now().Nanosecond()] = ways
-		}
-	}
-
-	// fmt.Println()
-	// fmt.Println(mapOutput)
-	return mapOutput
-}
-
-// ==================================================================================================
-
-type process struct {
-	parent int
-	vertex int
-	w      int
-}
 
 // DFS ...
-func (g *graph) DFS(start int, target int) []process {
+func (g *graph) DFS(start int, target int) map[int]stackQueueItem {
 	// begin = 1 => 0
 	start--
 	target--
 
-	g.isVisited = make([]bool, g.numberVertex)
-	prosAll := []process{}
+	mapTarget := make(map[int]stackQueueItem)
 
-	var stack [100]int
+	var stack [100]stackQueueItem
 	var top int
 
-	stack[top] = start
+	stack[top] = stackQueueItem{
+		vertex:    start,
+		isVisited: make([]*int, g.numberVertex),
+	}
 	top++
 
 	// fmt.Println(viewV(start))
 
 	for top != 0 {
 		top--
-		vertex := stack[top]
+		vertex := stack[top].vertex
+		isVisited := stack[top].isVisited
 
-		if g.isVisited[vertex] == false {
+		if isVisited[vertex] == nil {
 			// fmt.Print(viewV(vertex), " ")
-			g.isVisited[vertex] = true
+			isVisited[vertex] = &vertex
 
 			for v := g.numberVertex - 1; v >= 0; v-- {
 				key := fmt.Sprintf("%v-%v", viewV(vertex), viewV(v))
 				gTmp := g.mapCombinedVertex[key]
 				// gTmp := graph[vertex][v]
 
-				if g.isVisited[v] == false && gTmp != 0 {
-					stack[top] = v
-
-					// fmt.Println(viewV(v))
+				if isVisited[v] == nil && gTmp != 0 {
+					sqItem := stackQueueItem{
+						vertex:    v,
+						isVisited: isVisited,
+					}
+					stack[top] = sqItem
 					top++
 
+					fmt.Print(viewV(v), ": ")
+					for _, vv := range isVisited {
+						if vv == nil {
+							continue
+						}
+						fmt.Print(viewV(*vv), "-")
+					}
+					fmt.Println()
+
 					//
-					prosAll = append(prosAll, process{
-						parent: vertex,
-						vertex: v,
-						w:      gTmp,
-					})
-					// if v == target || vertex == target {
-					// 	goto OUT_LOOP
-					// }
+					if v == target {
+						mapTarget[time.Now().Nanosecond()] = sqItem
+					}
 				}
 			}
 		}
@@ -206,7 +107,7 @@ func (g *graph) DFS(start int, target int) []process {
 	}
 	// OUT_LOOP:
 
-	return prosAll
+	return mapTarget
 }
 
 func (g *graph) makeMapCombinedVertex() {
@@ -267,19 +168,4 @@ func (g *graph) readLineFile(path string) ([]string, error) {
 	}
 
 	return g.input, scanner.Err()
-}
-
-func write(str string) {
-	f, err := os.Create("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week2/lession1/output.txt")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer f.Close()
-	w := bufio.NewWriter(f)
-
-	w.WriteString(str)
-	w.WriteString("\n")
-
-	w.Flush()
 }

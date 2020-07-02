@@ -29,14 +29,13 @@ func main() {
 	g.makeAdjacencyMatrix()
 	g.makeAdjacencyEdge()
 
-	g.isVisited = make([]bool, g.n)
+	// g.isVisited = make([]bool, g.n)
 	fmt.Println("Duyet do thi DFS:")
 	g.DFS(0)
 
 	fmt.Println()
 	fmt.Println()
 
-	g.isVisited = make([]bool, g.n)
 	fmt.Println("Duyet do thi BFS:")
 	g.BFS(0)
 }
@@ -53,8 +52,7 @@ type graph struct {
 	adjacencyEdgeArrayV []int
 	adjacencyEdgeArrayE []int
 
-	n         int
-	isVisited []bool
+	n int
 }
 
 type edge struct {
@@ -203,30 +201,51 @@ func (g *graph) makeAdjacencyEdge() {
 
 // ========================================================================================
 
+type stackQueueItem struct {
+	vertex    int
+	isVisited []*int
+}
+
 // DFS ...
 func (g graph) DFS(start int) {
-	var stack [100]int
+	var stack [100]stackQueueItem
 	var top int
 
-	stack[top] = start
+	stack[top] = stackQueueItem{
+		vertex:    start,
+		isVisited: make([]*int, g.n),
+	}
 	top++
 
 	for top != 0 {
 		top--
-		vertex := stack[top]
+		vertex := stack[top].vertex
+		isVisited := stack[top].isVisited
 
-		if g.isVisited[vertex] == false {
-			fmt.Print(vertex, " ")
-			g.isVisited[vertex] = true
+		if isVisited[vertex] == nil {
+			// fmt.Print(vertex, " ")
+			isVisited[vertex] = &vertex
 
 			for v := g.n - 1; v >= 0; v-- {
 				key := fmt.Sprintf("%v-%v", vertex, v)
 				gTmp := g.mapCombinedVertex[key]
 				// gTmp := graph[vertex][v]
 
-				if g.isVisited[v] == false && gTmp != 0 {
-					stack[top] = v
+				if isVisited[v] == nil && gTmp != 0 {
+					stack[top] = stackQueueItem{
+						vertex:    v,
+						isVisited: isVisited,
+					}
 					top++
+
+					fmt.Print(v, ": ")
+					for _, vv := range isVisited {
+						if vv == nil {
+							continue
+						}
+						fmt.Print(*vv, "-")
+					}
+					fmt.Println()
 				}
 			}
 		}
@@ -236,12 +255,13 @@ func (g graph) DFS(start int) {
 
 // BFS ...
 func (g graph) BFS(start int) {
+	isQVisited := make([]bool, g.n)
 	var queue [100]int
 	top := 0
 	bottom := 0
 
 	queue[bottom] = start
-	g.isVisited[start] = true
+	isQVisited[start] = true
 	fmt.Print(start, " ")
 
 	for top >= bottom {
@@ -253,10 +273,10 @@ func (g graph) BFS(start int) {
 			gTmp := g.mapCombinedVertex[key]
 			// gTmp := graph[vertex][v]
 
-			if g.isVisited[v] == false && gTmp != 0 {
+			if isQVisited[v] == false && gTmp != 0 {
 				top++
 				queue[top] = v
-				g.isVisited[v] = true
+				isQVisited[v] = true
 
 				fmt.Print(v, " ")
 			}

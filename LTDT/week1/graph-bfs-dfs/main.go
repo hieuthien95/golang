@@ -228,10 +228,9 @@ func (g graph) DFS(start int) {
 
 			for v := g.n - 1; v >= 0; v-- {
 				key := fmt.Sprintf("%v-%v", vertex, v)
-				gTmp := g.mapCombinedVertex[key]
-				// gTmp := graph[vertex][v]
+				wTmp := g.mapCombinedVertex[key]
 
-				if strings.Contains(pathVisited, fmt.Sprint(v)) == false && gTmp != 0 {
+				if strings.Contains(pathVisited, fmt.Sprint(v)) == false && wTmp != 0 {
 					stack[top] = stackQueueItem{
 						vertex:      v,
 						pathVisited: pathVisited,
@@ -264,10 +263,9 @@ func (g graph) BFS(start int) {
 
 		for v := 0; v < g.n; v++ {
 			key := fmt.Sprintf("%v-%v", vertex, v)
-			gTmp := g.mapCombinedVertex[key]
-			// gTmp := graph[vertex][v]
+			wTmp := g.mapCombinedVertex[key]
 
-			if isQVisited[v] == false && gTmp != 0 {
+			if isQVisited[v] == false && wTmp != 0 {
 				top++
 				queue[top] = v
 				isQVisited[v] = true

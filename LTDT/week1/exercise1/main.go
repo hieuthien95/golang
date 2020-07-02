@@ -70,10 +70,9 @@ func DFS(start int, target int) map[int]stackQueueItem {
 
 			for v := numberVertex - 1; v >= 0; v-- {
 				key := fmt.Sprintf("%v-%v", vertex, v)
-				gTmp := mapGraph[key]
-				// gTmp := graph[vertex][v]
+				wTmp := mapGraph[key]
 
-				if strings.Contains(pathVisited, fmt.Sprint(v)) == false && gTmp != 0 {
+				if strings.Contains(pathVisited, fmt.Sprint(v)) == false && wTmp != 0 {
 					sqItem := stackQueueItem{
 						vertex:      v,
 						pathVisited: pathVisited,
@@ -129,10 +128,9 @@ func BFS(start int, target int) []process {
 		bottom++
 		for v := 0; v < numberVertex; v++ {
 			key := fmt.Sprintf("%v-%v", vertex, v)
-			gTmp := mapGraph[key]
-			// gTmp := graph[vertex][v]
+			wTmp := mapGraph[key]
 
-			if isQVisited[v] == false && gTmp != 0 {
+			if isQVisited[v] == false && wTmp != 0 {
 				top++
 				queue[top] = v
 				isQVisited[v] = true

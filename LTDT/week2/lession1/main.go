@@ -22,11 +22,6 @@ type graph struct {
 	end   int
 }
 
-type stackQueueItem struct {
-	vertex      int
-	pathVisited string
-}
-
 func main() {
 	g := graph{}
 	g.readLineFile("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week2/lession1/input.txt")
@@ -85,6 +80,11 @@ func (g *graph) printOutput(aToB map[int]stackQueueItem, bToA map[int]stackQueue
 
 // ==================================================================================================
 
+type stackQueueItem struct {
+	vertex      int
+	pathVisited string
+}
+
 // DFS ...
 func (g *graph) DFS(start int, target int) map[int]stackQueueItem {
 	// begin = 1 => 0
@@ -115,10 +115,9 @@ func (g *graph) DFS(start int, target int) map[int]stackQueueItem {
 
 			for v := g.numberVertex - 1; v >= 0; v-- {
 				key := fmt.Sprintf("%v-%v", viewV(vertex), viewV(v))
-				gTmp := g.mapCombinedVertex[key]
-				// gTmp := graph[vertex][v]
+				wTmp := g.mapCombinedVertex[key]
 
-				if strings.Contains(pathVisited, fmt.Sprint(v)) == false && gTmp != 0 {
+				if strings.Contains(pathVisited, fmt.Sprint(v)) == false && wTmp != 0 {
 					sqItem := stackQueueItem{
 						vertex:      v,
 						pathVisited: pathVisited,

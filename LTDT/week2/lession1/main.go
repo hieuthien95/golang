@@ -38,11 +38,50 @@ func main() {
 	g.start, g.end, _, _ = cutNumber(g.input[len(g.input)-1])
 	g.makeMapCombinedVertex()
 
-	g.DFS(g.start, g.end)
-	g.DFS(g.end, g.start)
+	aToB := g.DFS(g.start, g.end)
+	bToA := g.DFS(g.end, g.start)
+
+	g.printOutput(aToB, bToA)
 }
 
-// ==================================================================================================
+func (g *graph) printOutput(aToB map[int]stackQueueItem, bToA map[int]stackQueueItem) {
+
+	str := ""
+	weight := 999999
+	for _, sqItemS := range aToB {
+		strS := ""
+		arrS := strings.Split(strings.Trim(sqItemS.pathVisited, "-"), "-")
+		for i := 0; i < len(arrS); i++ {
+			strS += arrS[i] + "-"
+		}
+
+		for _, sqItemE := range bToA {
+			strE := ""
+			arrE := strings.Split(strings.Trim(sqItemE.pathVisited, "-"), "-")
+			for i := 0; i < len(arrE); i++ {
+				e := arrE[i]
+				strE += fmt.Sprint(e) + "-"
+			}
+			strE += fmt.Sprint(g.start - 1)
+
+			// new line
+			str1Line := strS + strE
+			str += str1Line + "\n"
+
+			// point
+			w := g.calWeight(str1Line)
+			if weight > w {
+				weight = w
+			}
+		}
+
+	}
+
+	str = fmt.Sprint(len(aToB)*len(bToA)) + " " + fmt.Sprint(weight) + "\n" + str
+	// write(str)
+
+	fmt.Println(str)
+}
 
 // ==================================================================================================
 
@@ -89,8 +128,8 @@ func (g *graph) DFS(start int, target int) map[int]stackQueueItem {
 
 					//
 					if v == target {
-						fmt.Print(pathVisited)
-						fmt.Println(v)
+						// fmt.Print(pathVisited)
+						// fmt.Println(v)
 
 						mapTarget[time.Now().Nanosecond()] = sqItem
 					}
@@ -143,6 +182,21 @@ func cutNumber(line string) (int, int, int, int) {
 
 func viewV(i int) int {
 	return i + 1
+}
+
+func (g *graph) calWeight(str string) int {
+	weight := 0
+	arrPoint := strings.Split(strings.Trim(str, "-"), "-")
+	for i, s := range arrPoint {
+		sInt, _ := strconv.Atoi(s)
+		if i > 0 {
+			s2Int, _ := strconv.Atoi(arrPoint[i-1])
+			key := fmt.Sprint(sInt+1) + "-" + fmt.Sprint(s2Int+1)
+			weight += g.mapCombinedVertex[key]
+		}
+	}
+
+	return weight
 }
 
 // ==================================================================================================

@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 var mapGraph map[string]int
 
@@ -43,15 +46,12 @@ func main() {
 	// }
 
 	start := 0
-	target := 3
+	target := 1
 
 	// ------------------------------------
 	isVisited = make([]bool, n)
 	fmt.Println("Duyet do thi DFS:")
-	printWays(
-		DFS(start, target),
-		target,
-	)
+	DFS(start, target)
 
 	fmt.Println()
 
@@ -66,56 +66,61 @@ func main() {
 
 // ========================================================================================
 
-type process struct {
-	parent int
-	vertex int
+type stackQueueItem struct {
+	vertex      int
+	pathVisited string
 }
 
 // DFS ...
-func DFS(start int, target int) []process {
-	prosAll := []process{}
-
-	var stack [100]int
+func DFS(start int, target int) {
+	var stack [100]stackQueueItem
 	var top int
 
-	stack[top] = start
+	stack[top] = stackQueueItem{
+		vertex:      start,
+		pathVisited: "",
+	}
 	top++
 
 	for top != 0 {
 		top--
-		vertex := stack[top]
+		vertex := stack[top].vertex
+		pathVisited := stack[top].pathVisited
 
-		if isVisited[vertex] == false {
-			fmt.Print(vertex, " ")
-			isVisited[vertex] = true
+		if strings.Contains(pathVisited, fmt.Sprint(vertex)) == false {
+			// fmt.Print(vertex, " ")
+			pathVisited += fmt.Sprint(vertex) + "-"
 
 			for v := n - 1; v >= 0; v-- {
 				key := fmt.Sprintf("%v-%v", vertex, v)
 				gTmp := mapGraph[key]
 				// gTmp := graph[vertex][v]
 
-				if isVisited[v] == false && gTmp != 0 {
-					stack[top] = v
+				if strings.Contains(pathVisited, fmt.Sprint(v)) == false && gTmp != 0 {
+					sqItem := stackQueueItem{
+						vertex:      v,
+						pathVisited: pathVisited,
+					}
+					stack[top] = sqItem
 					top++
 
-					//
-					prosAll = append(prosAll, process{
-						parent: vertex,
-						vertex: v,
-					})
-					if v == target || vertex == target {
-						return prosAll
+					if v == target {
+						fmt.Print(pathVisited)
+						fmt.Println(v)
 					}
 				}
 			}
 		}
 
 	}
-
-	return prosAll
 }
 
 // ========================================================================================
+
+type process struct {
+	parent int
+	vertex int
+}
 
 // BFS ...
 func BFS(start int, target int) []process {

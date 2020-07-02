@@ -202,8 +202,8 @@ func (g *graph) makeAdjacencyEdge() {
 // ========================================================================================
 
 type stackQueueItem struct {
-	vertex    int
-	isVisited []*int
+	vertex      int
+	pathVisited string
 }
 
 // DFS ...
@@ -212,40 +212,34 @@ func (g graph) DFS(start int) {
 	var top int
 
 	stack[top] = stackQueueItem{
-		vertex:    start,
-		isVisited: make([]*int, g.n),
+		vertex:      start,
+		pathVisited: "",
 	}
 	top++
 
 	for top != 0 {
 		top--
 		vertex := stack[top].vertex
-		isVisited := stack[top].isVisited
+		pathVisited := stack[top].pathVisited
 
-		if isVisited[vertex] == nil {
+		if strings.Contains(pathVisited, fmt.Sprint(vertex)) == false {
 			// fmt.Print(vertex, " ")
-			isVisited[vertex] = &vertex
+			pathVisited += fmt.Sprint(vertex) + "-"
 
 			for v := g.n - 1; v >= 0; v-- {
 				key := fmt.Sprintf("%v-%v", vertex, v)
 				gTmp := g.mapCombinedVertex[key]
 				// gTmp := graph[vertex][v]
 
-				if isVisited[v] == nil && gTmp != 0 {
+				if strings.Contains(pathVisited, fmt.Sprint(v)) == false && gTmp != 0 {
 					stack[top] = stackQueueItem{
-						vertex:    v,
-						isVisited: isVisited,
+						vertex:      v,
+						pathVisited: pathVisited,
 					}
 					top++
 
-					fmt.Print(v, ": ")
-					for _, vv := range isVisited {
-						if vv == nil {
-							continue
-						}
-						fmt.Print(*vv, "-")
-					}
-					fmt.Println()
+					fmt.Print(pathVisited)
+					fmt.Println(v)
 				}
 			}
 		}

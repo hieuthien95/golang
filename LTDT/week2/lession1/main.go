@@ -23,8 +23,8 @@ type graph struct {
 }
 
 type stackQueueItem struct {
-	vertex    int
-	isVisited []*int
+	vertex      int
+	pathVisited string
 }
 
 func main() {
@@ -58,8 +58,8 @@ func (g *graph) DFS(start int, target int) map[int]stackQueueItem {
 	var top int
 
 	stack[top] = stackQueueItem{
-		vertex:    start,
-		isVisited: make([]*int, g.numberVertex),
+		vertex:      start,
+		pathVisited: "",
 	}
 	top++
 
@@ -68,36 +68,30 @@ func (g *graph) DFS(start int, target int) map[int]stackQueueItem {
 	for top != 0 {
 		top--
 		vertex := stack[top].vertex
-		isVisited := stack[top].isVisited
+		pathVisited := stack[top].pathVisited
 
-		if isVisited[vertex] == nil {
+		if strings.Contains(pathVisited, fmt.Sprint(vertex)) == false {
 			// fmt.Print(viewV(vertex), " ")
-			isVisited[vertex] = &vertex
+			pathVisited += fmt.Sprint(vertex) + "-"
 
 			for v := g.numberVertex - 1; v >= 0; v-- {
 				key := fmt.Sprintf("%v-%v", viewV(vertex), viewV(v))
 				gTmp := g.mapCombinedVertex[key]
 				// gTmp := graph[vertex][v]
 
-				if isVisited[v] == nil && gTmp != 0 {
+				if strings.Contains(pathVisited, fmt.Sprint(v)) == false && gTmp != 0 {
 					sqItem := stackQueueItem{
-						vertex:    v,
-						isVisited: isVisited,
+						vertex:      v,
+						pathVisited: pathVisited,
 					}
 					stack[top] = sqItem
 					top++
 
-					fmt.Print(viewV(v), ": ")
-					for _, vv := range isVisited {
-						if vv == nil {
-							continue
-						}
-						fmt.Print(viewV(*vv), "-")
-					}
-					fmt.Println()
-
 					//
 					if v == target {
+						fmt.Print(pathVisited)
+						fmt.Println(v)
+
 						mapTarget[time.Now().Nanosecond()] = sqItem
 					}
 				}

@@ -7,12 +7,15 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type graph struct {
 	input []string
 
-	mapCombinedVertex map[string]int
+	mapEdge   map[string]int
+	mapVertex map[string]int
+	arrVertex []string
 
 	dong int
 	cot  int
@@ -24,8 +27,6 @@ type graph struct {
 	endY int
 
 	limitClimb int
-
-	isVisited []bool
 }
 
 func main() {
@@ -36,7 +37,86 @@ func main() {
 		return
 	}
 	g.dong, g.cot, g.startX, g.startY, g.endX, g.endY, g.limitClimb = cutNumber(g.input[0])
+	g.makeMapVertex()
+	g.makeMapEdge()
 
+	g.DFS("0.0", "3.3")
+}
+
+func (g *graph) makeMapVertex() {
+	g.mapVertex = make(map[string]int)
+
+	for i := 0; i < g.dong; i++ {
+		line := strings.Replace(g.input[i+1], "\r", "", 1)
+		arrStr := strings.Split(line, " ")
+		if len(arrStr) < g.cot {
+			return
+		}
+		for j := 0; j < g.cot; j++ {
+			key := fmt.Sprintf("%v.%v", i, j)
+			g.mapVertex[key], _ = strconv.Atoi(arrStr[j])
+			g.arrVertex = append(g.arrVertex, key)
+		}
+	}
+
+	// fmt.Println(g.mapVertex)
+}
+
+func (g *graph) makeMapEdge() {
+	g.mapEdge = make(map[string]int)
+
+	for v := range g.mapVertex {
+		arr := strings.Split(v, ".")
+		x, _ := strconv.Atoi(arr[0])
+		y, _ := strconv.Atoi(arr[1])
+
+		keyV := fmt.Sprintf("%v.%v", x, y)
+		keyV1 := fmt.Sprintf("%v.%v", x+1, y)
+		keyV2 := fmt.Sprintf("%v.%v", x-1, y)
+		keyV3 := fmt.Sprintf("%v.%v", x, y+1)
+		keyV4 := fmt.Sprintf("%v.%v", x, y-1)
+
+		weightV, okV := g.mapVertex[keyV]
+		weightV1, okV1 := g.mapVertex[keyV1]
+		weightV2, okV2 := g.mapVertex[keyV2]
+		weightV3, okV3 := g.mapVertex[keyV3]
+		weightV4, okV4 := g.mapVertex[keyV4]
+		if okV == false {
+			return
+		}
+
+		keyE01 := keyV + "-" + keyV1
+		keyE02 := keyV + "-" + keyV2
+		keyE03 := keyV + "-" + keyV3
+		keyE04 := keyV + "-" + keyV4
+
+		if okV1 == true {
+			w := weightV1 - weightV
+			if weightV <= weightV1 && w <= g.limitClimb {
+				g.mapEdge[keyE01] = w
+			}
+		}
+		if okV2 == true {
+			w := weightV2 - weightV
+			if weightV <= weightV2 && w <= g.limitClimb {
+				g.mapEdge[keyE02] = w
+			}
+		}
+		if okV3 == true {
+			w := weightV3 - weightV
+			if weightV <= weightV3 && w <= g.limitClimb {
+				g.mapEdge[keyE03] = w
+			}
+		}
+		if okV4 == true {
+			w := weightV4 - weightV
+			if weightV <= weightV4 && w <= g.limitClimb {
+				g.mapEdge[keyE04] = w
+			}
+		}
+	}
+
+	// fmt.Println(g.mapEdge)
 }
 
 // ==================================================================================================
@@ -47,7 +127,7 @@ func (g *graph) calWeight(str string) int {
 	for i, s := range arrPoint {
 		if i > 0 {
 			key := arrPoint[i-1] + "-" + s
-			weight += g.mapCombinedVertex[key]
+			weight += g.mapEdge[key]
 		}
 	}
 
@@ -56,66 +136,69 @@ func (g *graph) calWeight(str string) int {
 
 // ==================================================================================================
 
-type process struct {
-	parent int
-	vertex int
-	w      int
+type stackQueueItem struct {
+	vertex      string
+	pathVisited string
 }
 
 // DFS ...
-// func (g *graph) DFS(start int, target int) []process {
-// 	// begin = 1 => 0
-// 	start--
-// 	target--
+func (g *graph) DFS(start string, target string) map[int]stackQueueItem {
+	// // begin = 1 => 0
+	// start--
+	// target--
 
-// 	g.isVisited = make([]bool, g.numberVertex)
-// 	prosAll := []process{}
+	mapTarget := make(map[int]stackQueueItem)
 
-// 	var stack [100]int
-// 	var top int
+	var stack [100]stackQueueItem
+	var top int
 
-// 	stack[top] = start
-// 	top++
+	stack[top] = stackQueueItem{
+		vertex:      start,
+		pathVisited: "",
+	}
+	top++
 
-// 	// fmt.Println(viewV(start))
+	// fmt.Println(viewV(start))
 
-// 	for top != 0 {
-// 		top--
-// 		vertex := stack[top]
+	for top != 0 {
+		top--
+		vertex := stack[top].vertex
+		pathVisited := stack[top].pathVisited
 
-// 		if g.isVisited[vertex] == false {
-// 			// fmt.Print(viewV(vertex), " ")
-// 			g.isVisited[vertex] = true
+		if strings.Contains(pathVisited, vertex) == false {
+			// fmt.Print(viewV(vertex), " ")
+			pathVisited += vertex + " - "
 
-// 			for v := g.numberVertex - 1; v >= 0; v-- {
-// 				key := fmt.Sprintf("%v-%v", viewV(vertex), viewV(v))
-// 				gTmp := g.mapCombinedVertex[key]
-// 				// gTmp := graph[vertex][v]
+			for i := len(g.arrVertex) - 1; i >= 0; i-- {
+				v := g.arrVertex[i]
+				key := fmt.Sprintf("%v-%v", vertex, v)
+				_, okTmp := g.mapEdge[key]
+				// wTmp := graph[vertex][v]
 
-// 				if g.isVisited[v] == false && gTmp != 0 {
-// 					stack[top] = v
+				if strings.Contains(pathVisited, v) == false && okTmp == true {
+					sqItem := stackQueueItem{
+						vertex:      v,
+						pathVisited: pathVisited,
+					}
+					stack[top] = sqItem
+					top++
 
-// 					// fmt.Println(viewV(v))
-// 					top++
+					//
+					if v == target {
+						fmt.Print(pathVisited)
+						fmt.Println(v)
 
-// 					//
-// 					prosAll = append(prosAll, process{
-// 						parent: vertex,
-// 						vertex: v,
-// 						w:      gTmp,
-// 					})
-// 					// if v == target || vertex == target {
-// 					// 	goto OUT_LOOP
-// 					// }
-// 				}
-// 			}
-// 		}
+						mapTarget[time.Now().Nanosecond()] = sqItem
+					}
+				}
+			}
+		}
 
-// 	}
-// 	// OUT_LOOP:
+	}
+	// OUT_LOOP:
 
-// 	return prosAll
-// }
+	return mapTarget
+}
 
 // ==================================================================================================
 

@@ -2,16 +2,20 @@ package main
 
 import "fmt"
 
-func test() {
-	defer func() {
-		err := recover()
-		fmt.Println("recover: stopped", err)
-	}()
+func test() (data string) {
+    defer func() {
+        err := recover()
+        fmt.Println("recover: stopped", err)
+        data = "catch return dc ne"
+    }()
 	
     panic(fmt.Sprintf("I am a  %d"))
+
+    return "bbbb"
 }
 
 func main() {
-	test()
-	fmt.Print("aaaa")
+	data:=test()
+	fmt.Println("aaaa")
+	fmt.Println("output: ", data)
 }

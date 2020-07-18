@@ -87,16 +87,16 @@ func (g *Graph) bellmanFord(start int) {
 func (g *Graph) viewPathBellmanFord(start int) {
 
 	for i := 0; i < g.n; i++ {
-		p := ""
+		way := ""
 
 		//DÙng mãng P và đỉnh kết thúc để truy suất từng phần tử đã lưu trong P
 		vertex := i
 		for vertex != start {
 			vertex = g.P[vertex]
-			p = fmt.Sprint(vertex, "-", p)
+			way = fmt.Sprint(vertex, "-", way)
 		}
 
-		p += fmt.Sprint(i) + fmt.Sprint(" = ", g.Weight[i])
-		fmt.Println(p)
+		way += fmt.Sprint(i) + fmt.Sprint(" = ", g.Weight[i])
+		fmt.Println(way)
 	}
 }

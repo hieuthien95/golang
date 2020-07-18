@@ -12,7 +12,7 @@ import (
 
 func main() {
 	graph := Graph{}
-	graph.ReadLineFile("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week3/exercise1/input.txt")
+	graph.ReadLineFile("/Users/thienbui/Documents/Learn/git-hieuthien95/golang/LTDT/week3/exercise1 - dijsktra/input.txt")
 
 	fmt.Println(graph.Dijkstra())
 }

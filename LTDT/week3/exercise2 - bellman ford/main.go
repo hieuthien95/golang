@@ -35,13 +35,13 @@ type Graph struct {
 	// MatrixA [][]int
 	MapEdge map[string]int
 
-	P      []int
-	Weight []int
+	Tracking []int
+	Weight   []int
 }
 
 func (g *Graph) bellmanFord(start int) {
 	//Bước khởi tạo giống mã giả
-	g.P = make([]int, g.n)
+	g.Tracking = make([]int, g.n)
 	g.Weight = make([]int, g.n)
 
 	for i := 0; i < len(g.Weight); i++ {
@@ -65,7 +65,7 @@ func (g *Graph) bellmanFord(start int) {
 				if g.Weight[j] > g.Weight[i]+g.MapEdge[key] {
 
 					g.Weight[j] = g.Weight[i] + g.MapEdge[key]
-					g.P[j] = i
+					g.Tracking[j] = i
 
 					stop = false
 				}
@@ -92,7 +92,7 @@ func (g *Graph) viewPathBellmanFord(start int) {
 		//DÙng mãng P và đỉnh kết thúc để truy suất từng phần tử đã lưu trong P
 		vertex := i
 		for vertex != start {
-			vertex = g.P[vertex]
+			vertex = g.Tracking[vertex]
 			way = fmt.Sprint(vertex, "-", way)
 		}
 

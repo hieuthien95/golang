@@ -52,70 +52,6 @@ func callRestStation(url string, authen string) (resp QueueResp, err error) {
 	return resp, nil
 }
 
-func checkRTP() string {
-	var message string
-
-	if len(arrStation2) != 1 || len(arrStation2[0].items) != 2 {
-		message = "Invalid len"
-
-		// send message
-		sendMessage(-410940764, message)
-
-		// console
-		fmt.Println(message)
-		fmt.Println()
-
-		return message
-	}
-	check := arrStation2[0]
-
-	item := check.items[0]
-	url := item.baseURL
-	resp1, err := callRestStation(url, check.token)
-	if err != nil {
-		message = url + "\n\n" + err.Error()
-
-		// send message
-		sendMessage(-410940764, message)
-
-		// console
-		fmt.Println(message)
-		fmt.Println()
-
-		return message
-	}
-
-	item = check.items[1]
-	url = item.baseURL
-	resp2, err := callRestStation(url, check.token)
-	if err != nil {
-		message = url + "\n\n" + err.Error()
-
-		// send message
-		sendMessage(-410940764, message)
-
-		// console
-		fmt.Println(message)
-		fmt.Println()
-
-		return message
-	}
-
-	message = fmt.Sprintf("Queue(%v) - RTP(%v)", resp1.Total, resp2.Total)
-	if resp1.Total < resp2.Total || resp1.Total == 0 || resp2.Total == 0 {
-		// send message
-		sendMessage(-410940764, message)
-
-		// console
-		fmt.Println(message)
-		fmt.Println()
-
-		return message
-	}
-
-	return message
-}
-
 func getUpdateActionStation() {
 	var message string
 
@@ -132,7 +68,7 @@ func getUpdateActionStation() {
 					message = infoMessage + "\n\n" + err.Error()
 
 					// send message
-					sendMessage(-410940764, message)
+					// sendMessage(-410940764, message)
 
 					// console
 					fmt.Println(message)
@@ -153,7 +89,4 @@ func getUpdateActionStation() {
 			}
 		}
 	}
-
-	//
-	checkRTP()
 }

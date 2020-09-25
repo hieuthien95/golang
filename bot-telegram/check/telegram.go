@@ -101,12 +101,6 @@ func getUpdateMessage() {
 			sendMessage(-410940764, "Done")
 			return
 		}
-		// getUpdateActionStation
-		if elm.Message.Text == "/stationRTP" {
-			message := checkRTP()
-			sendMessage(-410940764, message)
-			return
-		}
 
 		// getUpdateActionPayroll
 		if elm.Message.Text == "/payroll" {

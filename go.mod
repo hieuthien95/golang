@@ -17,6 +17,7 @@ require (
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/micro/go-micro v1.18.0
+	github.com/streadway/amqp v1.0.0
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	golang.org/x/net v0.0.0-20200528225125-3c3fba18258b
 	google.golang.org/grpc v1.29.1

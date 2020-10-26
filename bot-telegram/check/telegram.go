@@ -109,6 +109,19 @@ func getUpdateMessage() {
 			return
 		}
 
+		// getUpdateActionPayroll
+		if strings.Contains(elm.Message.Text, "/calcCBDP") {
+			arr := strings.Split(elm.Message.Text, " ")
+			if len(arr) < 2 {
+				sendMessage(-410940764, "Invalid input: size != 2")
+				return
+			}
+
+			resp, _ := callCalcPayrollCBDP(arr[1])
+			sendMessage(-410940764, resp.Message)
+			return
+		}
+
 		// channel
 		if strings.Contains(elm.Message.Text, "/chan") {
 			getUpdateActionChannel(elm.Message.Text)

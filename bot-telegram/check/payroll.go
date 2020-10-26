@@ -41,6 +41,34 @@ func callRestPayroll(url string, authen string) (data PayrollResp, err error) {
 	return data, nil
 }
 
+func callCalcPayrollCBDP(q string) (data PayrollResp, err error) {
+
+	req, err := http.NewRequest("GET", fmt.Sprintf(`http://payroll-api.ghn.vn/pcw/v1/calculate/cbdp?q={"dateCalculate":[%v]}`, q), nil)
+	if err != nil {
+		return data, err
+	}
+
+	req.Header.Add("Authorization", "Basic ")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return data, err
+	}
+
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return data, err
+	}
+
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return data, err
+	}
+
+	return data, nil
+}
+
 func getUpdateActionPayroll() {
 
 	for _, check := range arrPayroll {

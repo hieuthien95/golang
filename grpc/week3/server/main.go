@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc"
 )
 
-type server struct {
-}
+// impl CalculatorServiceServer
+type server struct{}
 
 func main() {
 	// new listener

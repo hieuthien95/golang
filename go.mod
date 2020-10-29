@@ -7,6 +7,8 @@ require (
 	github.com/buger/goterm v0.0.0-20200322175922-2f3e71b85129
 	github.com/coreos/go-systemd v0.0.0-20190719114852-fd7a80b32e1f // indirect
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
+	github.com/go-redis/cache/v7 v7.0.2
+	github.com/go-redis/redis/v7 v7.4.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.4.2
 	github.com/jinzhu/gorm v1.9.12
@@ -19,6 +21,7 @@ require (
 	github.com/micro/go-micro v1.18.0
 	github.com/streadway/amqp v1.0.0
 	github.com/valyala/fasttemplate v1.1.0 // indirect
+	github.com/vmihailenco/msgpack v4.0.4+incompatible
 	golang.org/x/net v0.0.0-20200528225125-3c3fba18258b
 	google.golang.org/grpc v1.29.1
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22

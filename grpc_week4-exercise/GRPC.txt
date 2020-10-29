@@ -1,4 +1,4 @@
-export GOPATH=/Users/username/go
+export GOPATH=/Users/<username>/go
 export PATH=$GOPATH/bin:$PATH
 export GOBIN=$GOPATH/bin
 
@@ -16,7 +16,7 @@ STEP 2: View url download https://github.com/protocolbuffers/protobuf/releases
     rm -f $PROTOC_ZIP
 
 STEP 3: 
-    export GOPATH=/Users/username/go
+    export GOPATH=/Users/<username>/go
     export PATH=$GOPATH/bin:$PATH
     export GOBIN=$GOPATH/bin
 

@@ -21,7 +21,7 @@ func main() {
 
 	s := grpc.NewServer()
 
-	week3.RegisterCalculatorServiceServer(s, server{})
+	week3.RegisterCalculatorServiceServer(s, &server{})
 
 	// run
 	fmt.Println("Runing...")

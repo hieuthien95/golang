@@ -16,3 +16,9 @@ go get -u google.golang.org/grpc
 ```
 protoc week2/week2.proto --go_out=paths=source_relative,plugins=grpc:. 
 ```
+
+## week3-4 demo
+```
+go run week3/server/main.go
+go run week3/client/main.go
+```

@@ -1,0 +1,8 @@
+syntax = "proto3"; //su dung proto3
+
+package week3;
+
+option go_package="week3";
+
+service CalculatorService {
+}

@@ -1,0 +1,17 @@
+syntax = "proto3"; //su dung proto3
+
+package week5;
+
+option go_package="week5";
+
+message SSRequest {
+    string text = 1;
+}
+
+message SSResponse {
+    string output = 1;
+}
+
+service SSService {
+    rpc SSFunc(SSRequest) returns (stream SSResponse) {} // server streaming
+}

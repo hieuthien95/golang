@@ -27,10 +27,18 @@ go run week3/server/main.go
 go run week3/client/main.go
 ```
 
-## week4 demo
+## week4: UNARY
 ```
 protoc week4/calculate.proto --go_out=plugins=grpc:.
 
 go run week4/server/main.go
 go run week4/client/main.go
+```
+
+## week5: SERVER STREAMING
+```
+protoc week5/server-streaming.proto --go_out=plugins=grpc:.
+
+go run week5/server/main.go
+go run week5/client/main.go
 ```

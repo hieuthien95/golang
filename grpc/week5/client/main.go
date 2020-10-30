@@ -37,6 +37,10 @@ func sendSS(client week5.SSServiceClient) error {
 			fmt.Println("end of stream")
 			break
 		}
+		if err != nil {
+			fmt.Println("Recv: ", err.Error())
+			return err
+		}
 
 		fmt.Println("Output: " + resp.GetOutput())
 	}

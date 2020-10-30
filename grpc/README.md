@@ -25,7 +25,7 @@ or
 protoc week2/calculate.proto --go_out=plugins=grpc:.
 ```
 
-## week3-4 demo
+## week3: setup server/client
 ```
 protoc week3/calculate.proto --go_out=plugins=grpc:.
 

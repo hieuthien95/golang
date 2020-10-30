@@ -1,0 +1,17 @@
+syntax = "proto3"; //su dung proto3
+
+package week6;
+
+option go_package="week6";
+
+message CSRequest {
+    string text = 1;
+}
+
+message CSResponse {
+    string output = 1;
+}
+
+service CSService {
+    rpc CSFunc(stream CSRequest) returns (CSResponse) {} // client streaming
+}

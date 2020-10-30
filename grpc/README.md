@@ -1,4 +1,10 @@
 ﻿# Begin
+
+## docs
+```
+https://grpc.io/docs/languages/go/basics/
+```
+
 ## install
 ```
 export GOPATH=/Users/<username>/go
@@ -41,4 +47,12 @@ protoc week5/server-streaming.proto --go_out=plugins=grpc:.
 
 go run week5/server/main.go
 go run week5/client/main.go
+```
+
+## week6: CLIENT STREAMING
+```
+protoc week6/client-streaming.proto --go_out=plugins=grpc:.
+
+go run week6/server/main.go
+go run week6/client/main.go
 ```

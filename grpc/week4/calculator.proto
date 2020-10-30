@@ -14,5 +14,5 @@ message SumResponse {
 }
 
 service CalculatorService {
-    rpc Sum (SumRequest) returns (SumResponse);
+    rpc Sum (SumRequest) returns (SumResponse); // unary
 }

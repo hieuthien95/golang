@@ -1,0 +1,17 @@
+syntax = "proto3"; //su dung proto3
+
+package week7;
+
+option go_package="week7";
+
+message MinMaxRequest {
+    int32 input = 1;
+}
+
+message MinMaxResponse {
+    string result = 1;
+}
+
+service CalculatorService {
+    rpc MinMax2WayStreaming(stream MinMaxRequest) returns (stream MinMaxResponse) {} // 2 way streaming
+}

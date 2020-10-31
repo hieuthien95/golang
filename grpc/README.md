@@ -18,13 +18,6 @@ go get -u github.com/golang/protobuf/{proto,protoc-gen-go} go get -u google.gola
 go get -u google.golang.org/grpc
 ```
 
-## week2 demo
-```
-protoc week2/calculate.proto --go_out=paths=source_relative,plugins=grpc:. 
-or
-protoc week2/calculate.proto --go_out=plugins=grpc:.
-```
-
 ## week3: setup server/client
 ```
 protoc week3/calculate.proto --go_out=plugins=grpc:.
@@ -56,3 +49,12 @@ protoc week6/client-streaming.proto --go_out=plugins=grpc:.
 go run week6/server/main.go
 go run week6/client/main.go
 ```
+
+## week6: 2 WAY STREAMING
+```
+protoc week7/min-max-2-way-streaming.proto.proto --go_out=plugins=grpc:.
+
+go run week7/server/main.go
+go run week7/client/main.go
+```
+

@@ -16,6 +16,7 @@ export PATH=$PATH:/usr/local/sbin
 
 ```
 brew services start rabbitmq
+brew services restart rabbitmq
 ```
 
 ## Check queue

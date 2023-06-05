@@ -130,3 +130,8 @@ $env:GOPROXY="direct"
 $env:GOSUMDB="off"
 go get gitlab.ghn.vn/common-projects/go-sdk v0.1.31
 ```
+
+Go Path
+```
+export PATH="/Users/thienbh/sdk/go1.19.4/bin:$PATH"   
+```
